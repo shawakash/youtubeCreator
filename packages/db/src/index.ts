@@ -11,8 +11,10 @@ const creatorSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true, unique: true },
     videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
-    editor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Editor' }]
-});
+    editor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Editor' }],
+    refreshToken: { type: String },
+    accessToken: { type: String }
+}, { timestamps: true });
 
 const editorSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
@@ -20,7 +22,7 @@ const editorSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
-});
+}, { timestamps: true });
 
 // const videoSchema = new mongoose.Schema({
 
