@@ -12,8 +12,8 @@ const creatorSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
     editor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Editor' }],
-    refreshToken: { type: String },
-    accessToken: { type: String }
+    refreshToken: { type: String, default: '' },
+    accessToken: { type: String, default: '' }
 }, { timestamps: true });
 
 const editorSchema = new mongoose.Schema({

@@ -1,10 +1,13 @@
-import { dbConnect } from "db";
+import { Creator, dbConnect } from "db";
 import { NextApiRequest, NextApiResponse } from "next";
 import middle from "./middle";
 import axios from "axios";
+import { CreatorType } from "zodTypes";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    
+    
     if (req.method != 'GET') {
         return res.status(400).json({ message: 'Fetch request method error' });
     }
@@ -15,8 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             throw new Error('Please define the `CLIENT_ID`, `REDIRECT_URI`, `CLIENT_SECRET` environment variable');
             // return res.status(400).json({ message: 'No client id and redirect uri was provided' })
         }
-
-        
+            const { state } = req.query;
             const clientId = CLIENT_ID;
             const clientSecret = CLIENT_SECRET;
             const redirectUri = REDIRECT_URI; // Should match the authorized redirect URI in your client settings
@@ -39,13 +41,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 // Store tokens securely for future API requests
                 // You can implement your storage mechanism here
-                if(!accessToken || !refreshToken) {
-                    return res.status(400).json({ message: 'Please Try Again' });
-                }
-
+                // if(!accessToken || !refreshToken) {
+                //     return res.status(400).json({ message: 'Please Try Again' });
+                // }
+                console.log(refreshToken, accessToken)
+                const creator = await Creator.findById(state);
                 
+                creator.refreshToken = refreshToken;
+                creator.accessToken = accessToken;
+                await creator.save();
 
-                res.status(200).json({message: 'Authentication successful! You can close this window.', accessToken, refreshToken});
+                res.redirect('/auth');
+                return res.status(200).json({message: 'Authentication successful! You can close this window.', accessToken, refreshToken});
             } catch (error) {
                 console.error('Error exchanging authorization code for tokens:', error);
                 res.status(500).send('Error during authentication');

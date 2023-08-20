@@ -14,10 +14,11 @@ const auth = () => {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': sessionStorage.getItem('creatorToken'),
-                // 'Access-Control-Allow-Origin': "*"
+                'Access-Control-Allow-Origin': "http://localhost:3000"
             }
-        }).then(response => {
+        }).then(async (response) => {
             console.log(response);
+            window.location.href = response.data.authUrl
         }).catch(err => {
             console.log(err);
         })

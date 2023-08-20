@@ -21,6 +21,8 @@ export type editorSignup = z.infer<typeof editorInputValid>;
 export interface CreatorType extends creatorSignup {
     editors: string[],
     videos: string[],
+    refreshToken: string,
+    accessToken: string,
     _id: string
 }
 

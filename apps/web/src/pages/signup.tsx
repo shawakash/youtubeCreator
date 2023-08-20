@@ -26,6 +26,7 @@ const signup = () => {
       }
     }).then(response => {
       Cookies.set('creatorToken', response.data.token);
+      sessionStorage.setItem('creatorToken', response.data.token)
       setCreatorId(response.data._id);
       toast.success(response.data.message);
       router.push('/auth');
@@ -46,6 +47,7 @@ const signup = () => {
     if (Cookies.get('creatorToken')) {
       Cookies.remove('creatorToken');
       setCreatorId(null);
+      sessionStorage.clear()
       toast.success('Clearing Session :)');
     }
   }, [])

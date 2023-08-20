@@ -47,6 +47,7 @@ const login = () => {
     useEffect(() => {
         if (Cookies.get('creatorToken')) {
             Cookies.remove('creatorToken');
+            sessionStorage.clear()
             setCreatorId(null);
             toast.success('Clearing Session :)');
         }
