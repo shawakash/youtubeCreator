@@ -44,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // if(!accessToken || !refreshToken) {
                 //     return res.status(400).json({ message: 'Please Try Again' });
                 // }
-                console.log(refreshToken, accessToken)
+                console.log(response);
                 const creator = await Creator.findById(state);
                 
                 creator.refreshToken = refreshToken;

@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if(isCreator.password !== password) {
             return res.status(400).json({ message: 'Wrong password :(' });
         }
-        const token = jwt.sign({ _id: isCreator._id }, CREATOR_SECRET);
+        const token = jwt.sign({ _id: isCreator._id }, CREATOR_SECRET, { expiresIn: '1h' });
 
         const cookieSerialized = serialize('creatorToken', token, {
             httpOnly: true,

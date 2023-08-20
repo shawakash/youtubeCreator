@@ -1,9 +1,12 @@
 import axios from 'axios'
 import Cookies from 'js-cookie';
-import React from 'react'
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react'
+import { toast } from 'react-hot-toast';
+import protection from '../../utils/protection';
 
 const auth = () => {
-
+    const router = useRouter();
     const { BASEURL } = process.env;
     console.log(Cookies.get('creatorToken'))
     const handleAuth = () => {
@@ -17,16 +20,31 @@ const auth = () => {
                 'Access-Control-Allow-Origin': "http://localhost:3000"
             }
         }).then(async (response) => {
-            console.log(response);
-            window.location.href = response.data.authUrl
+            toast.success('Redirecting to auth page :) ')
+            router.push(response.data.authUrl)
         }).catch(err => {
-            console.log(err);
+            if (err) {
+                if (err.response) {
+                    toast.error(err.response.data.message);
+                    return;
+                }
+                toast.error(err.message);
+                return;
+            }
         })
     }
+
+    // useEffect(() => {
+    //     if(!sessionStorage.getItem('creatorToken')) {
+    //         toast.error('Session Expired');
+    //         Cookies.remove('creatorToken');
+    //         router.push('/login');
+    //     }
+    // }, [])
 
   return (
     <button onClick={handleAuth} >Auth</button>
   )
 }
 
-export default auth
+export default protection(auth);

@@ -45,7 +45,7 @@ const login = () => {
     }
 
     useEffect(() => {
-        if (Cookies.get('creatorToken')) {
+        if (Cookies.get('creatorToken') || sessionStorage.getItem('creatorToken')) {
             Cookies.remove('creatorToken');
             sessionStorage.clear()
             setCreatorId(null);

@@ -7,7 +7,6 @@ const middle = async (req: NextApiRequest, res: NextApiResponse, next: () => voi
         throw new Error('Please define the `CREATOR_SECRET` environment variable');
       }
     const authHeader = req.headers.authorization;
-    console.log(authHeader)
     if (authHeader) {
         let token = authHeader;
         if(authHeader.startsWith('Bearer')) {

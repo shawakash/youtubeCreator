@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         const creator = new Creator(parsedInput.data);
         await creator.save();
-        const token = jwt.sign({ _id: creator._id }, CREATOR_SECRET);
+        const token = jwt.sign({ _id: creator._id }, CREATOR_SECRET, { expiresIn: '1h' });
 
         const cookieSerialized = serialize('creatorToken', token, {
             httpOnly: true,
