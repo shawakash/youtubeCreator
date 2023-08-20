@@ -1,10 +1,12 @@
 import React from 'react';
-import { SignUpForm } from 'ui'
+import { SignUpForm } from 'ui';
+import { creatorSignup } from 'zodTypes';
 
 const signup = () => {
 
-    const handleSubmit = (data: any) => {
-        console.log(data)
+    const handleSubmit = (data: creatorSignup) => {
+        console.log(data);
+        const payload: creatorSignup = data
     }
 
   return (

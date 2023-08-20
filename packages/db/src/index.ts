@@ -10,7 +10,21 @@ const creatorSchema = new mongoose.Schema({
     password: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true, unique: true },
+    videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
+    editor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Editor' }]
 });
+
+const editorSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
+});
+
+// const videoSchema = new mongoose.Schema({
+
+// })
 
 const getModel = (modelName: any, schema: any) => {
     try {
@@ -22,6 +36,7 @@ const getModel = (modelName: any, schema: any) => {
 };
 
 export const Creator = getModel('Creator', creatorSchema);
+export const Editor = getModel('Editor', editorSchema);
 
 
 export const dbConnect = () => {
