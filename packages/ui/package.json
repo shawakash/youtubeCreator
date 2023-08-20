@@ -19,6 +19,7 @@
     "next": "13.4.19",
     "postcss": "8.4.28",
     "tsconfig": "*",
+    "zodTypes": "*",
     "tailwind-config": "*",
     "typescript": "^4.5.2"
   }

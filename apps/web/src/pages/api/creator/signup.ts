@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         
         res.setHeader('Set-Cookie', cookieSerialized);
 
-        return res.status(200).json({ message: 'Account Created Succesfully', token })
+        return res.status(200).json({ message: 'Account Created Succesfully', token, _id: creator._id })
 
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error', err: error })

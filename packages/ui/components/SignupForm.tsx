@@ -1,14 +1,14 @@
 import * as React from "react";
 import { FormEvent, useRef } from 'react';
 import Link from 'next/link';
+import { creatorSignup } from "zodTypes";
 
 
-export const SignUpForm: React.FC<{ url: string, propData: (data: any) => void }> = ({ url, propData }) => {
-  const client = url.includes('admin') ? 'admin' : 'user';
+export const SignUpForm: React.FC<{ client: string, propData: (data: creatorSignup) => void }> = ({ client = 'creator', propData }) => {
   const usernameRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const emailRef = useRef<HTMLInputElement | null>(null);
-  const phoneRef = useRef<HTMLInputElement | null>(null);
+  const nameRef = useRef<HTMLInputElement | null>(null);
 
   const handleSignup = (e: FormEvent) => {
     e.preventDefault();
@@ -16,27 +16,27 @@ export const SignUpForm: React.FC<{ url: string, propData: (data: any) => void }
       usernameRef.current !== null &&
       passwordRef.current !== null &&
       emailRef.current !== null &&
-      phoneRef.current !== null
+      nameRef.current !== null
     ) {
 
       if (
         usernameRef.current.value !== null &&
         passwordRef.current.value !== null &&
         emailRef.current.value !== null &&
-        phoneRef.current.value !== null
+        nameRef.current.value !== null
       ) {
 
-        const data: any = {
+        const data: creatorSignup = {
           username: usernameRef.current.value,
           password: passwordRef.current.value,
           email: emailRef.current.value,
-          phone: parseInt(phoneRef.current.value)
+          name: nameRef.current.value
         };
         propData(data);
         usernameRef.current.value = '';
         passwordRef.current.value = '';
         emailRef.current.value = '';
-        phoneRef.current.value = '';
+        nameRef.current.value = '';
       }
     }
 
@@ -44,7 +44,7 @@ export const SignUpForm: React.FC<{ url: string, propData: (data: any) => void }
   return (
 
     <div className="bg-white p-8 shadow-md rounded-md w-[450px] hover:shadow-2xl transition-all ">
-      <h2 className="text-2xl font-semibold mb-4 tracking-wide">{client === 'admin' ? 'Admin' : 'User'} Sign Up</h2>
+      <h2 className="text-2xl font-semibold mb-4 tracking-wide">{client === 'creator' ? 'Creators' : 'Editors'} Sign Up</h2>
       <form onSubmit={handleSignup}>
         <div className="mb-4">
           <label htmlFor="username" className="block text-sm font-medium text-gray-700">
@@ -86,15 +86,15 @@ export const SignUpForm: React.FC<{ url: string, propData: (data: any) => void }
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-            Phone
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            Name
           </label>
           <input
-            ref={phoneRef}
-            type="number"
-            id="phone"
+            ref={nameRef}
+            type="text"
+            id="name"
             className="mt-1 px-3 py-2 block w-full border rounded-md focus:ring focus:ring-blue-300 transition-all"
-            placeholder="Your Number Sir"
+            placeholder="Your Name"
             required
           />
         </div>
@@ -105,7 +105,7 @@ export const SignUpForm: React.FC<{ url: string, propData: (data: any) => void }
           >
               Sign Up
           </button>
-          <Link href={`/${client}/login`}><div className="hover:text-blue-500 hover:scale-105 active:scale-95 transition-all font-sans tracking-wide font-light">Already a {client[0].toUpperCase() + client.slice(1)}?</div></Link>
+          <Link href={`/login`}><div className="hover:text-blue-500 hover:scale-105 active:scale-95 transition-all font-sans tracking-wide font-light">Already a {client.charAt(0).toUpperCase() + client.slice(1)}?</div></Link>
         </div>
       </form>
     </div>

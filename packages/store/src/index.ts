@@ -1,7 +1,7 @@
 import { atom } from "recoil";
 
 
-export const creatorAtom = atom({
-    key: 'creatorAtom',
-    default: {}
+export const creatorIdAtom = atom({
+    key: 'creatorIdAtom',
+    default: null
 });

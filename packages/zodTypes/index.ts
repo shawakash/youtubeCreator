@@ -27,4 +27,11 @@ export interface CreatorType extends creatorSignup {
 export interface EditorType extends editorSignup {
     video: string[],
     _id: string
-}
+};
+
+export const LoginValid = z.object({
+    username: z.string(),
+    password: z.string()
+});
+
+export type LoginType = z.infer<typeof LoginValid>;
