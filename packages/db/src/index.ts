@@ -31,7 +31,7 @@ const rawVideoSchema = new mongoose.Schema({
     description: {type: String, required: true}, // Html kind page
     data: {type: Buffer, required: true},
     contentType: {type: String, required: true},
-    deadLineDate: {type: Date, required: true},
+    deadLineDate: {type: String, required: true},
     deadLineTime: {type: String, required: true},
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'Creator' },
     editor: { type: mongoose.Schema.Types.ObjectId, ref: 'Editor' },

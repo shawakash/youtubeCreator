@@ -72,4 +72,8 @@ export type rawVideoInputType = z.infer<typeof rawVideo>
 
 export interface RawVideoType extends rawVideoInputType {
     _id: string,
+    creator: string,
+    editor: string,
+    isEdited: boolean,
+    isUploaded: boolean
 }

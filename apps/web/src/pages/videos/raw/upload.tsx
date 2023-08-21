@@ -44,15 +44,15 @@ const VideoUploader = () => {
 
     if (selectedVideo) {
 
-        const buffer: Buffer= Buffer.from(selectedVideo, 'base64');
-        console.log( buffer instanceof Buffer);
+
+        const buffer: Buffer = Buffer.from(selectedVideo, 'base64');
 
         const data: rawVideoInputType = {
             thumbnail: 'First Upload',
             description: 'First Description',
             data: buffer,
             contentType: 'video/mp4',
-            deadLineDate: (new Date(2023, 8, 22)).toString(),
+            deadLineDate: '22023/3/23',
             deadLineTime: '01:00'
         }
         axios({
@@ -64,11 +64,13 @@ const VideoUploader = () => {
             'Authorization': sessionStorage.getItem('creatorToken')
           },
           data: data
-        }).then(response => {
+        })
+        .then(response => {
           setAllRawVideos(pre => [...pre, { ...data, _id: response.data._id }]);
           toast.success(response.data.message);
           router.push('/video/allRawVideo');
-        }).catch(err => {
+        })
+        .catch(err => {
           if(err) {
             if(err.response && (err.response.status == 403  || err.response.status == 401)) {
               toast.error(err.response.data.message);

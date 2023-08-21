@@ -5,6 +5,9 @@ import tokenValidator from '../auth/tokenValidator';
 import fs from 'fs';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    if(req.method != 'GET') {
+        return res.status(400).json({ message: 'Its  Get request' });
+    }
     try {
 
         tokenValidator(req, res, async () => {
