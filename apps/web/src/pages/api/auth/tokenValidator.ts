@@ -12,17 +12,22 @@ const tokenValidator = async (req: NextApiRequest, res: NextApiResponse, next: (
 
     middle(req, res, async () => {
         const {_id} = req.headers;
-        const { CLIENT_ID } = process.env;
+        const { CLIENT_ID, OUTH_TOKEN_VALID_URL } = process.env;
         if (!CLIENT_ID || CLIENT_ID.length == 0) {
             throw new Error('Please define the CREATOR_SECRET environment variable');
         }
+
+        if (!OUTH_TOKEN_VALID_URL || OUTH_TOKEN_VALID_URL.length == 0) {
+            throw new Error('Please define the OUTH_TOKEN_VALID_URL environment variable');
+        }
+
         console.log('Hello')
 
         const creator = await Creator.findById(_id);
 
         const {accessToken, refreshToken} = creator;
 
-        const response = await axios.post('https://www.googleapis.com/oauth2/v3/tokeninfo', {
+        const response = await axios.post(OUTH_TOKEN_VALID_URL, {
             access_token: accessToken,
             refresh_token: refreshToken,
         });

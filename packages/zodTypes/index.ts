@@ -1,5 +1,19 @@
 import { z } from 'zod';
 
+const bufferTransformer = z
+  .string()
+  .refine(value => {
+    try {
+      Buffer.from(value, 'base64'); // Attempt to convert the string to a Buffer
+      return true;
+    } catch {
+      return false;
+    }
+  }, {
+    message: 'Expected a valid base64 encoded Buffer.',
+  })
+  .transform(value => Buffer.from(value, 'base64'));
+
 export const creatorInputValid = z.object({
     username: z.string(),
     password: z.string(),
@@ -37,3 +51,25 @@ export const LoginValid = z.object({
 });
 
 export type LoginType = z.infer<typeof LoginValid>;
+
+export const rawVideo = z.object({
+    thumbnail: z.string(),
+    description: z.string(), // Html kind page
+    data: z.custom<Buffer>((val) => {
+        // if (val instanceof Buffer) {
+            //@ts-ignore
+          return val.data;
+        // }
+        // console.log(val.data)
+        // throw new Error('Expected a Buffer.');
+      }),
+    contentType: z.string(),
+    deadLineDate: z.string(),
+    deadLineTime: z.string(),
+});
+
+export type rawVideoInputType = z.infer<typeof rawVideo>
+
+export interface RawVideoType extends rawVideoInputType {
+    _id: string,
+}

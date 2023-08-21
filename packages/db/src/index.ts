@@ -10,7 +10,8 @@ const creatorSchema = new mongoose.Schema({
     password: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true, unique: true },
-    videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
+    editedVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
+    rawVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RawVideo' }],
     editor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Editor' }],
     refreshToken: { type: String, default: '' },
     accessToken: { type: String, default: '' }
@@ -21,12 +22,22 @@ const editorSchema = new mongoose.Schema({
     password: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
-    videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
+    rawVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RawVideo' }],
+    editedVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
 }, { timestamps: true });
 
-// const videoSchema = new mongoose.Schema({
-
-// })
+const rawVideoSchema = new mongoose.Schema({
+    thumbnail: {type: String, required: true, unique: true},
+    description: {type: String, required: true}, // Html kind page
+    data: {type: Buffer, required: true},
+    contentType: {type: String, required: true},
+    deadLineDate: {type: Date, required: true},
+    deadLineTime: {type: String, required: true},
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'Creator' },
+    editor: { type: mongoose.Schema.Types.ObjectId, ref: 'Editor' },
+    isEdited: { type: Boolean, default: false },
+    isUploaded: { type: Boolean, default: false }
+}, { timestamps: true })
 
 const getModel = (modelName: any, schema: any) => {
     try {
@@ -39,6 +50,7 @@ const getModel = (modelName: any, schema: any) => {
 
 export const Creator = getModel('Creator', creatorSchema);
 export const Editor = getModel('Editor', editorSchema);
+export const RawVideo = getModel('RawVideo', rawVideoSchema);
 
 
 export const dbConnect = () => {
