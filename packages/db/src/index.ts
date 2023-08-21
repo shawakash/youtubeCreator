@@ -27,9 +27,10 @@ const editorSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const rawVideoSchema = new mongoose.Schema({
-    thumbnail: {type: String, required: true, unique: true},
+    thumbnail: {type: String, required: true, },
+    title: {type: String, required: true, unique: true},
     description: {type: String, required: true}, // Html kind page
-    data: {type: Buffer, required: true},
+    videoUrl: { type: String, required: true },
     contentType: {type: String, required: true},
     deadLineDate: {type: String, required: true},
     deadLineTime: {type: String, required: true},

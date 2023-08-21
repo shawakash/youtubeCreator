@@ -1,72 +1,93 @@
-import { RawVideo, dbConnect } from "db";
-import { NextApiRequest, NextApiResponse } from "next";
-import { rawVideo } from "zodTypes";
-import middle from "../auth/middle";
-import multer from 'multer';
-import { S3 } from 'aws-sdk';
+import fs from 'fs';
+import AWS from 'aws-sdk';
+import formidable from 'formidable';
+import { IncomingForm } from 'formidable';
+import { RawVideo, dbConnect } from 'db';
+import middle from '../auth/middle';
+import { rawVideo } from 'zodTypes';
 
-const storage = multer.memoryStorage(); // Store the file in memory before uploading to S3
-const upload = multer({ storage });
+const { AWS_REGION, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET_NAME } = process.env;
 
-// export default async (req: NextApiRequest, res: NextApiResponse) => {
-//     if (req.method != 'POST') {
-//         return res.status(400).json({ message: 'Its a post request' });
-//     }
-//     upload.single('file')(req as any, res as any, async () => {
-//         try {
-//             await dbConnect();
-//             middle(req, res, async () => {
-//                 const { _id } = req.headers;
-//                 console.log(req.files)
-//                 // const parsedInput = rawVideo.safeParse(req.body);
-//                 // if (!parsedInput.success) {
-//                 //     return res.status(400).json({ messsage: 'Validation Error', err: parsedInput });
-//                 // };
+const s3Client = new AWS.S3({
+    // endpoint,
+    region: AWS_REGION,
+    credentials: {
+        accessKeyId: AWS_ACCESS_KEY,
+        secretAccessKey: AWS_SECRET_KEY
+    }
+});
 
-//                 // const raw = new RawVideo({ ...req.body, creator: _id });
-//                 // await raw.save();
+export const config = {
+    api: {
+        bodyParser: false
+    }
+}
 
-//                 // return res.status(200).json({ message: 'Video Uploaded, waiting to get edited', _id: raw._id });
+export default async function handler(req, res) {
+    // const form = formidable();
+    if(req.method != 'POST') {
+        return res.status(400).json({ message: 'Its a Post request' });
+    }
+    try {
+        
+        await dbConnect();
 
-//             })
-//         } catch (error) {
-//             return res.status(500).json({ message: 'Internal Server Error', err: error })
-//         }
-//     });
-// }
+        middle(req, res, async () => {
+            const form = new IncomingForm({ keepExtensions: true, uploadDir: './public/uploads/rawVideos' });
+            form.parse(req, async (err, fields, files) => {
+                
+                if (err) {
+                    console.error('Formidable error:', err);
+                    return res.status(500).json({ message: 'An error occurred' });
+                }
+                
+                if (!files.rawVideos) {
+                    return res.status(400).json({ message: 'Raw Videos file missing' });
+                }
+                console.log(files)
 
+                const videoFile = files.rawVideos[0];
+                const videoStream = fs.createReadStream(videoFile.filepath);
+                const uploadParams = {
+                    Bucket: AWS_BUCKET_NAME,
+                    Key: `uploads/${videoFile.originalFilename}`,
+                    Body: videoStream,
+                    ACL: 'public-read',
+                };
+                
+                const data = JSON.parse(fields.data[0]);
+                const parsedData = rawVideo.safeParse(data);
+                if(!data) {
+                    return res.status(400).json({ message: 'Validation Error', err: parsedData })
+                }
+                const { _id } = req.headers;
+                
+                // try {
+                    //     const uploadResponse = await s3Client.upload(uploadParams).promise();
+                    
+                    //     // Generate a signed URL for the uploaded object
+                    //     const signedUrl = s3Client.getSignedUrl('getObject', {
+                        //         Bucket: AWS_BUCKET_NAME,
+                        //         Key: uploadParams.Key,
+                        //         Expires: 3600 * 24 * 100, // URL expiration time in seconds
+                        //     });
 
-// import aws from 'aws-sdk';
-// import nc from 'next-connect';
-// import { NextApiRequest, NextApiResponse } from 'next';
+                        // const raw = new RawVideo({...data, videoUrl: signedUrl, creator: _id});
+                        // await raw.save();
 
-// const apiRoute = nc<NextApiRequest, NextApiResponse>();
-
-// const s3 = new aws.S3();
-
-// // Define the route handler
-// apiRoute.post(async (req, res) => {
-//   try {
-//     const { video } = req.body;
-//     const videoFile = req.files?.video as Express.Multer.File;
-
-//     if (!videoFile) {
-//       return res.status(400).json({ error: 'Video file is required.' });
-//     }
-
-//     const params = {
-//       Bucket: 'your-bucket-name',
-//       Key: `videos/${videoFile.originalname}`,
-//       Body: videoFile.buffer,
-//       ACL: 'public-read', // Make the video publicly accessible
-//     };
-
-//     const uploadResponse = await s3.upload(params).promise();
-
-//     return res.status(200).json({ message: 'Video uploaded successfully.', url: uploadResponse.Location });
-//   } catch (error) {
-//     return res.status(500).json({ error: 'Error uploading video.' });
-//   }
-// });
-
-// export default apiRoute;
+                        
+                        //     // Remove the local file after uploading to S3
+                        // fs.unlinkSync(videoFile.filepath);
+                    
+                //     return res.status(200).json({ message: 'Upload successful', url: uploadResponse.Location, rawVideo: raw });
+                // } catch (error) {
+                //     console.error('S3 upload error:', error);
+                //     return res.status(500).json({ message: 'Upload failed' });
+                // }
+                
+            })
+        })
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error', err: error })
+    }
+    }

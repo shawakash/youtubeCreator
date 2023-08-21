@@ -1,98 +1,98 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useSetRecoilState } from 'recoil';
 import { allRawVideo } from 'store';
 import { rawVideoInputType } from 'zodTypes';
 import protection from '../../../../utils/protection';
+import { FileUpload } from 'primereact/fileupload';
+
 
 
 const VideoUploader = () => {
-  const video = useRef(null);
+  const rawVideo = useRef(null);
 
   const setAllRawVideos = useSetRecoilState(allRawVideo);
   const router = useRouter();
 
   const { BASEURL } = process.env;
 
-  // const readFileAsBuffer = (file: File): Promise<Buffer> => {
-  //   return new Promise<Buffer>((resolve, reject) => {
-  //     const reader = new FileReader();
 
-  //     reader.onload = (event) => {
-  //       const result = event.target?.result;
-  //       if (result instanceof Buffer) {
-  //         resolve(result);
-  //       } else {
-  //         reject(new Error('Failed to read video file.'));
-  //       }
-  //     };
-  
-  //     reader.onerror = (error) => {
-  //       reject(error);
-  //     };
-  
-  //     Buffer.from(reader.readAsArrayBuffer(file))
-  //   });
-  // };
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    const selectedVideo = rawVideo.current.value;
+    console.log(selectedVideo);
 
-  const handleUpload = async () => {
-
-    const selectedVideo = video.current.value;
-    console.log(selectedVideo)
 
     if (selectedVideo) {
 
+      const data: rawVideoInputType = {
+        thumbnail: 'First Upload',
+        title: 'First Title',
+        description: 'First Description',
+        contentType: 'video/mp4',
+        deadLineDate: '22023/3/23',
+        deadLineTime: '01:00'
+      }
+      const formData = new FormData();
+      formData.append('rawVideos', rawVideo.current.files[0]);
+      formData.append('data', JSON.stringify(data));
 
-        const buffer: Buffer = Buffer.from(selectedVideo, 'base64');
-
-        const data: rawVideoInputType = {
-            thumbnail: 'First Upload',
-            description: 'First Description',
-            data: buffer,
-            contentType: 'video/mp4',
-            deadLineDate: '22023/3/23',
-            deadLineTime: '01:00'
-        }
-        axios({
-          baseURL: BASEURL || 'http://localhost:3000/api',
-          url: '/video/rawUpload',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': sessionStorage.getItem('creatorToken')
-          },
-          data: data
-        })
+      axios({
+        baseURL: BASEURL || 'http://localhost:3000/api',
+        url: '/video/rawUpload',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': sessionStorage.getItem('creatorToken')
+        },
+        data: formData
+      })
         .then(response => {
-          setAllRawVideos(pre => [...pre, { ...data, _id: response.data._id }]);
+          // setAllRawVideos(pre => [...pre, { ...data, _id: response.data._id }]);
           toast.success(response.data.message);
-          router.push('/video/allRawVideo');
+          // router.push('/video/allRawVideo');
         })
         .catch(err => {
-          if(err) {
-            if(err.response && (err.response.status == 403  || err.response.status == 401)) {
-              toast.error(err.response.data.message);
-              sessionStorage.clear
-              router.push('/login');
-            }
-          } else if (err.response) {
-              toast.error(err.response.data.message);
-          }
-          console.log(err)
+          // if (err) {
+          //   if (err.response && (err.response.status == 403 || err.response.status == 401)) {
+          //     toast.error(err.response.data.message);
+          //     sessionStorage.clear
+          //     router.push('/login');
+          //   }
+          // } else if (err.response) {
+          //   toast.error(err.response.data.message);
+          // }
+          // console.log(err)
         })
-      
+
     } else {
       console.warn('No video selected for upload.');
     }
   };
 
+
+
+
   return (
     <div>
       <h2>Upload a Video</h2>
-      <input ref={video} type="file" accept="video/*" />
-      <button onClick={handleUpload}>Upload</button>
+
+      <div>
+        <h2>Upload Video</h2>
+        <form onSubmit={handleUpload}>
+          <input
+            ref={rawVideo}
+            type="file"
+            name="rawVideos"
+            accept="video/*"
+          />
+          <button type="submit">Upload</button>
+        </form>
+      </div>
+
+
     </div>
   );
 };

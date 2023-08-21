@@ -54,15 +54,8 @@ export type LoginType = z.infer<typeof LoginValid>;
 
 export const rawVideo = z.object({
     thumbnail: z.string(),
+    title: z.string(),
     description: z.string(), // Html kind page
-    data: z.custom<Buffer>((val) => {
-        // if (val instanceof Buffer) {
-            //@ts-ignore
-          return val.data;
-        // }
-        // console.log(val.data)
-        // throw new Error('Expected a Buffer.');
-      }),
     contentType: z.string(),
     deadLineDate: z.string(),
     deadLineTime: z.string(),
@@ -72,6 +65,7 @@ export type rawVideoInputType = z.infer<typeof rawVideo>
 
 export interface RawVideoType extends rawVideoInputType {
     _id: string,
+    videoUrl: string,
     creator: string,
     editor: string,
     isEdited: boolean,
