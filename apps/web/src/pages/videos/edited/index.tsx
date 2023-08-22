@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { GetServerSidePropsContext } from 'next';
 import cookie from 'cookie';
 import protection from '../../../../utils/protection';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
-import { allRawVideo } from 'store';
-import { RawVideoType } from 'zodTypes';
+import { allEditVideo } from 'store';
+import { EditVideoType } from 'zodTypes';
 import { VideoCard } from 'ui';
 
-const index: React.FC<{ videos: RawVideoType[] }> = ({ videos }) => {
-  const [rawVideos, setRawVideos] = useRecoilState(allRawVideo)
+const index: React.FC<{ videos: EditVideoType[] }> = ({ videos }) => {
+  const [editVideos, setEditVideos] = useRecoilState(allEditVideo)
 
   useEffect(() => {
     if(videos) {
-      setRawVideos(videos);
+      setEditVideos(videos);
     }
   }, []);
   
@@ -21,7 +21,7 @@ const index: React.FC<{ videos: RawVideoType[] }> = ({ videos }) => {
   return (
     <>
       <div className="flex flex-wrap p-10 gap-8 justify-center items-center h-screen bg-gray-100">
-        {rawVideos.length > 0 && rawVideos.map(rv => <VideoCard key={rv._id} video={rv} type='raw' />)}
+        {editVideos.length > 0 && editVideos.map(rv => <VideoCard key={rv._id} video={rv} type='edit' />)}
       </div>
     </>
   )
@@ -41,12 +41,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': token,
-        'type': 'raw'
+        'type': 'edit'
       }
      });
     return {
       props: {
-        videos: response.data.raw
+        videos: response.data.edit
       }
     }
     

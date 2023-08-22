@@ -16,8 +16,8 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         await dbConnect();
         middle(req, res, async () => {
             const expiresin = 3600 * 24 * 4;
-            const rawVideos = req.body;
-            for(let i of rawVideos) {
+            const videos = req.body;
+        for(let i of videos) {
                 try {
                     const response = await axios({
                         baseURL: BASEURL,
@@ -39,7 +39,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
                     console.log(error)
                 }
             }
-            return res.status(200).json({ message: 'Signed Urls', rawVideos })
+            return res.status(200).json({ message: 'Signed Urls', videos })
         })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error', err: error })

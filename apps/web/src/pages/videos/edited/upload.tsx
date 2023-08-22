@@ -1,19 +1,20 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { toast } from 'react-hot-toast';
 import { useSetRecoilState } from 'recoil';
-import { allRawVideo } from 'store';
-import { rawVideoInputType } from 'zodTypes';
+import { allEditVideo } from 'store';
+import { editVideoInputType } from 'zodTypes';
 import protection from '../../../../utils/protection';
 import { FileUpload } from 'primereact/fileupload';
+import edited from '.';
 
 
 
 const VideoUploader = () => {
-  const rawVideo = useRef(null);
+  const editVideo = useRef(null);
 
-  const setAllRawVideos = useSetRecoilState(allRawVideo);
+  const setAllEditedVideos = useSetRecoilState(allEditVideo);
   const router = useRouter();
 
   const { BASEURL, AWS_RAW_VIDEO_BUCKET_NAME } = process.env;
@@ -21,7 +22,7 @@ const VideoUploader = () => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    const selectedVideo = rawVideo.current;
+    const selectedVideo = editVideo.current;
     console.log(selectedVideo);
 
 
@@ -38,7 +39,7 @@ const VideoUploader = () => {
           'Content-Type': 'application/json',
           'Authorization': sessionStorage.getItem('creatorToken'),
           'key': key,
-          'bucketname': 'creator-raw-videos'
+          'bucketname': 'creator-edit-video'
         }
       })
         .then(response => {
@@ -56,11 +57,11 @@ const VideoUploader = () => {
 
               if (response.status == 200) {
 
-                const data: rawVideoInputType = {
+                const data: editVideoInputType = {
                   thumbnail: 'First Uploadvcx',
                   title: 'First Titlevc',
                   videoKey: key,
-                  bucketName: 'creator-raw-videos',
+                  bucketName: 'creator-edit-video',
                   description: 'First Descriptionvcx',
                   contentType: 'video/mp4',
                   deadLineDate: '22043/3/23',
@@ -68,7 +69,7 @@ const VideoUploader = () => {
                 }
                 axios({
                   baseURL: BASEURL || 'http://localhost:3000/api',
-                  url: '/video/addRawCredential',
+                  url: '/video/addEditCredential',
                   method: 'POST',
                   data: data,
                   headers: {
@@ -77,9 +78,9 @@ const VideoUploader = () => {
                   }
                 }).then(response => {
                   if (response.status == 200) {
-                    setAllRawVideos(pre => [...pre, { ...data, _id: response.data._id, isUploaded: false, isEdited: false }]);
+                    setAllEditedVideos(pre => [...pre, { ...data, _id: response.data._id, isUploaded: false }]);
                     toast.success(response.data.message);
-                    router.push('/videos/raw');
+                    router.push('/videos/edited');
                   }
                 }).catch(err => {
                   if (err) {
@@ -136,15 +137,14 @@ const VideoUploader = () => {
 
   return (
     <div>
-      <h2>Upload a Video</h2>
 
       <div>
         <h2>Upload Video</h2>
         <form onSubmit={handleUpload}>
           <input
-            ref={rawVideo}
+            ref={editVideo}
             type="file"
-            name="rawVideos"
+            name="editVideos"
             accept="video/*"
           />
           <button type="submit">Upload</button>

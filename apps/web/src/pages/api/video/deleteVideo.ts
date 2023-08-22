@@ -1,5 +1,5 @@
 import aws from 'aws-sdk';
-import { Creator, RawVideo, dbConnect } from 'db';
+import { Creator, EditedVideo, RawVideo, dbConnect } from 'db';
 import { NextApiRequest, NextApiResponse } from 'next';
 import middle from '../auth/middle';
 
@@ -18,6 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             await dbConnect();
 
             middle(req, res, async () => {
+                const { type } = req.headers;
                 const { credentialid, videokey, bucketname, _id } = req.body;
                 
                 // Initialize AWS S3
@@ -30,10 +31,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }).promise();
 
                 if(credentialid) {
-                    const rawCredentials = await RawVideo.findByIdAndDelete(credentialid);
-                    const creator = await Creator.findById(_id);
-                    creator.rawVideos = creator.rawVideos.filter((rv: string) => rv != credentialid);
-                    await creator.save();
+                    if(type === 'raw') {
+                        const rawCredentials = await RawVideo.findByIdAndDelete(credentialid);
+                        const creator = await Creator.findById(_id);
+                        creator.rawVideos = creator.rawVideos.filter((rv: string) => rv != credentialid);
+                        await creator.save();
+                        
+                    }if(type === 'edit') {
+                        const editCredentials = await EditedVideo.findByIdAndDelete(credentialid);
+                        const creator = await Creator.findById(_id);
+                        creator.editedVideos = creator.editedVideos.filter((rv: string) => rv != credentialid);
+                        await creator.save();
+                    }
                 }
                 
                 res.status(200).json({ message: 'Video deleted successfully' });

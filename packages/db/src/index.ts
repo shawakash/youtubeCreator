@@ -10,7 +10,7 @@ const creatorSchema = new mongoose.Schema({
     password: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true, unique: true },
-    editedVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
+    editedVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'EditedVideo' }],
     rawVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RawVideo' }],
     editor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Editor' }],
     refreshToken: { type: String, default: '' },
@@ -40,6 +40,20 @@ const rawVideoSchema = new mongoose.Schema({
     editor: { type: mongoose.Schema.Types.ObjectId, ref: 'Editor' },
     isEdited: { type: Boolean, default: false },
     isUploaded: { type: Boolean, default: false }
+}, { timestamps: true });
+
+const editedVideosSchema = new mongoose.Schema({
+    thumbnail: {type: String, required: true, },
+    title: { type: String, required: true },
+    description: {type: String, required: true}, // Html kind page
+    videoKey: { type: String, required: true },
+    bucketName: { type: String, required: true },
+    contentType: {type: String, required: true},
+    deadLineDate: {type: String, required: true},
+    deadLineTime: {type: String, required: true},
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'Creator' },
+    editor: { type: mongoose.Schema.Types.ObjectId, ref: 'Editor' },
+    isUploaded: { type: Boolean, default: false }
 }, { timestamps: true })
 
 const getModel = (modelName: any, schema: any) => {
@@ -54,6 +68,7 @@ const getModel = (modelName: any, schema: any) => {
 export const Creator = getModel('Creator', creatorSchema);
 export const Editor = getModel('Editor', editorSchema);
 export const RawVideo = getModel('RawVideo', rawVideoSchema);
+export const EditedVideo = getModel('EditedVideo', editedVideosSchema);
 
 
 export const dbConnect = () => {

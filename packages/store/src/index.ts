@@ -9,4 +9,9 @@ export const creatorIdAtom = atom({
 export const allRawVideo = atom({
     key: 'allRawVideo',
     default: []
-})
+});
+
+export const allEditVideo = atom({
+    key: 'allEditVideo',
+    default: []
+});

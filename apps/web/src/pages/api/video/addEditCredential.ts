@@ -1,7 +1,7 @@
-import { Creator, RawVideo, dbConnect } from "db";
+import { Creator, EditedVideo, RawVideo, dbConnect } from "db";
 import { NextApiRequest, NextApiResponse } from "next";
 import middle from "../auth/middle";
-import { rawVideo } from "zodTypes";
+import { editVideo, rawVideo } from "zodTypes";
 import axios from "axios";
 
 const { BASEURL } = process.env;
@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         await dbConnect();
         middle(req, res, async () => {
-            const parsedInput = rawVideo.safeParse(req.body);
+            const parsedInput = editVideo.safeParse(req.body);
             if(!parsedInput.success) {
                 return res.status(400).json({ message: 'Validation Error', err: parsedInput })
             }
@@ -21,12 +21,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const creator = await Creator.findById(_id);
 
-            const raw = new RawVideo({...parsedInput.data, creator: _id});
-            await raw.save();
-            creator.rawVideos.push(raw._id);
+            const edit = new EditedVideo({...parsedInput.data, creator: _id});
+            await edit.save();
+            creator.editedVideos.push(edit._id);
             await creator.save();
 
-            return res.status(200).json({ message: 'Raw Video Uploaded Successfully'}); 
+            return res.status(200).json({ message: 'Edit Video Uploaded Successfully to server'}); 
 
         })
     } catch (error) {
@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 headers: {
                     'Content-Type': 'application/json',
                     "Authorization": req.headers.authorization,
-                    "type": 'raw'
+                    "type": "edit"
                 },
                 data: {
                     "videoKey": req.body.videoKey,
@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             })
         } catch (error) {
-            
+            return res.status(500).json({ message: 'Extra Video in edit bucket', err: error })
         }
         return res.status(500).json({ message: 'Internal Error', err: error })
     }
