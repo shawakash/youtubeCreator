@@ -36,7 +36,7 @@ const tokenValidator = async (req: NextApiRequest, res: NextApiResponse, next: (
         // const isValid = response.data.isValid; // Adjust based on the response format
         // console.log(response);
         if(!isValid) {
-            return res.status(400).json({ message: 'Token expired' });
+            return res.status(401).json({ message: 'Token expired' });
         }
         console.log(isValid)
         req.headers['accessToken'] = accessToken;

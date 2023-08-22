@@ -14,7 +14,8 @@ const creatorSchema = new mongoose.Schema({
     rawVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RawVideo' }],
     editor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Editor' }],
     refreshToken: { type: String, default: '' },
-    accessToken: { type: String, default: '' }
+    accessToken: { type: String, default: '' },
+    hasAllowed: { type: Boolean, default: false }
 }, { timestamps: true });
 
 const editorSchema = new mongoose.Schema({
@@ -30,7 +31,8 @@ const rawVideoSchema = new mongoose.Schema({
     thumbnail: {type: String, required: true, },
     title: {type: String, required: true, unique: true},
     description: {type: String, required: true}, // Html kind page
-    videoUrl: { type: String, required: true },
+    videoKey: { type: String, required: true },
+    bucketName: { type: String, required: true },
     contentType: {type: String, required: true},
     deadLineDate: {type: String, required: true},
     deadLineTime: {type: String, required: true},

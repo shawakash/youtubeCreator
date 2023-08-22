@@ -24,7 +24,7 @@ const middle = async (req: NextApiRequest, res: NextApiResponse, next: () => voi
         });
     } else {
         console.log('kksd')
-        res.status(401).json({ message: 'Unauthorized', isAuth: false });
+        res.status(403).json({ message: 'Unauthorized', isAuth: false });
     }
 }
 

@@ -13,6 +13,7 @@
     "@aws-sdk/s3-request-presigner": "^3.395.0",
     "@types/aws-sdk": "^2.7.0",
     "@types/axios": "^0.14.0",
+    "@types/cookie": "^0.5.1",
     "@types/cors": "^2.8.13",
     "@types/formidable": "^3.4.1",
     "@types/js-cookie": "^3.0.3",

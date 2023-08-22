@@ -55,6 +55,8 @@ export type LoginType = z.infer<typeof LoginValid>;
 export const rawVideo = z.object({
     thumbnail: z.string(),
     title: z.string(),
+    videoKey: z.string(),
+    bucketName: z.string(),
     description: z.string(), // Html kind page
     contentType: z.string(),
     deadLineDate: z.string(),
@@ -65,9 +67,9 @@ export type rawVideoInputType = z.infer<typeof rawVideo>
 
 export interface RawVideoType extends rawVideoInputType {
     _id: string,
-    videoUrl: string,
     creator: string,
     editor: string,
     isEdited: boolean,
-    isUploaded: boolean
+    isUploaded: boolean,
+    hasAllowed: boolean
 }

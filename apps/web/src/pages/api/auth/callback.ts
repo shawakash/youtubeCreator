@@ -49,9 +49,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 
                 creator.refreshToken = refreshToken;
                 creator.accessToken = accessToken;
+                creator.hasAllowed = true;
                 await creator.save();
 
-                res.redirect('/auth');
+                res.redirect('/videos/raw/upload');
                 return res.status(200).json({message: 'Authentication successful! You can close this window.', accessToken, refreshToken});
             } catch (error) {
                 console.error('Error exchanging authorization code for tokens:', error);

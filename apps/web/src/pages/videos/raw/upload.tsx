@@ -16,55 +16,114 @@ const VideoUploader = () => {
   const setAllRawVideos = useSetRecoilState(allRawVideo);
   const router = useRouter();
 
-  const { BASEURL } = process.env;
+  const { BASEURL, AWS_RAW_VIDEO_BUCKET_NAME } = process.env;
 
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    const selectedVideo = rawVideo.current.value;
+    const selectedVideo = rawVideo.current;
     console.log(selectedVideo);
+
 
 
     if (selectedVideo) {
 
-      const data: rawVideoInputType = {
-        thumbnail: 'First Upload',
-        title: 'First Title',
-        description: 'First Description',
-        contentType: 'video/mp4',
-        deadLineDate: '22023/3/23',
-        deadLineTime: '01:00'
-      }
-      const formData = new FormData();
-      formData.append('rawVideos', rawVideo.current.files[0]);
-      formData.append('data', JSON.stringify(data));
-
+      const currentDate = new Date().toISOString().replace(/[-:.]/g, '');
+      const key = `${selectedVideo.name}-${currentDate}`;
       axios({
         baseURL: BASEURL || 'http://localhost:3000/api',
-        url: '/video/rawUpload',
-        method: 'POST',
+        url: '/video/getPutSignedUrl',
+        method: 'GET',
         headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': sessionStorage.getItem('creatorToken')
-        },
-        data: formData
+          'Content-Type': 'application/json',
+          'Authorization': sessionStorage.getItem('creatorToken'),
+          'key': key,
+          'bucketname': 'creator-raw-videos'
+        }
       })
         .then(response => {
-          // setAllRawVideos(pre => [...pre, { ...data, _id: response.data._id }]);
-          toast.success(response.data.message);
-          // router.push('/video/allRawVideo');
+          console.log(response.data);
+
+          if (response.status == 200) {
+            axios({
+              url: response.data.presignedUrl,
+              method: 'PUT',
+              data: selectedVideo.files[0],
+              headers: {
+                'Content-Type': selectedVideo.type,
+              },
+            }).then(response => {
+
+              if (response.status == 200) {
+
+                const data: rawVideoInputType = {
+                  thumbnail: 'First Uploadvcx',
+                  title: 'First Titlevc',
+                  videoKey: key,
+                  bucketName: 'creator-raw-videos',
+                  description: 'First Descriptionvcx',
+                  contentType: 'video/mp4',
+                  deadLineDate: '22043/3/23',
+                  deadLineTime: '01:00'
+                }
+                axios({
+                  baseURL: BASEURL || 'http://localhost:3000/api',
+                  url: '/video/addRawCredential',
+                  method: 'POST',
+                  data: data,
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': sessionStorage.getItem('creatorToken')
+                  }
+                }).then(response => {
+                  if (response.status == 200) {
+                    setAllRawVideos(pre => [...pre, { ...data, _id: response.data._id }]);
+                    toast.success(response.data.message);
+                    // router.push('/video/allRawVideo');
+                  }
+                }).catch(err => {
+                  if (err) {
+                    if (err.response && (err.response.status == 403)) {
+                      toast.error(err.response.data.message);
+                      sessionStorage.clear
+                      router.push('/login');
+                    } else if(err.response.status == 401) {
+                      toast.error('Please first allow us your youtube access');
+                      router.push('/auth')
+                    }
+                  } else if (err.response) {
+                    toast.error(err.response.data.message);
+                  }
+                  console.log(err)
+                })
+              }
+
+            }).catch(err => {
+              if (err) {
+                if (err.response && (err.response.status == 403 || err.response.status == 401)) {
+                  toast.error(err.response.data.message);
+                  sessionStorage.clear
+                  router.push('/login');
+                }
+              } else if (err.response) {
+                toast.error(err.response.data.message);
+              }
+              console.log(err)
+            })
+          }
+
         })
         .catch(err => {
-          // if (err) {
-          //   if (err.response && (err.response.status == 403 || err.response.status == 401)) {
-          //     toast.error(err.response.data.message);
-          //     sessionStorage.clear
-          //     router.push('/login');
-          //   }
-          // } else if (err.response) {
-          //   toast.error(err.response.data.message);
-          // }
-          // console.log(err)
+          if (err) {
+            if (err.response && (err.response.status == 403 || err.response.status == 401)) {
+              toast.error(err.response.data.message);
+              sessionStorage.clear
+              router.push('/login');
+            }
+          } else if (err.response) {
+            toast.error(err.response.data.message);
+          }
+          console.log(err)
         })
 
     } else {

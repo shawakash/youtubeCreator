@@ -46,16 +46,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         await dbConnect();
         middle(req, res, async () => {
-            const { videoFileKey } = req.headers;
-
-            const signedUrl = s3.getSignedUrl('getObject', {
-                Bucket: AWS_BUCKET_NAME,
-                Key: videoFileKey,
-                Expires: 3600, // URL expiration time in seconds
-            });
-
+            const { videofilekey, bucketname, expiresin } = req.headers;
+            try {
+                const signedUrl = s3.getSignedUrl('getObject', {
+                    Bucket: bucketname,
+                    Key: videofilekey,
+                    Expires: expiresin || 3600 * 24, // URL expiration time in seconds
+                });
+    
+                return res.status(200).json({ message: 'Signed url generated successfully', signedUrl })
+            } catch (error) {
+                return res.status(500).json({ message: 'Internal Error', err: error })
+            }
         });
-
 
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error', err: error });

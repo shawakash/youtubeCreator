@@ -8,9 +8,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if(req.method != 'POST') {
         return res.status(400).json({ message: 'Its a post request' });
     }
-    await dbConnect();
-
+    
     try {
+        await dbConnect();
 
         const { CREATOR_SECRET } = process.env;
         if (!CREATOR_SECRET || CREATOR_SECRET.length == 0) {
