@@ -58,7 +58,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': req.headers.authorization,
-                        // videofilekey, bucketname, expiresin
                         'videofilekey': video.videoKey,
                         'bucketName': video.bucketName,
                         'expiresin': 3600 * 24
