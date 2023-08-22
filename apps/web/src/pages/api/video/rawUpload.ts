@@ -1,21 +1,27 @@
 import fs from 'fs';
-import AWS from 'aws-sdk';
+import AWS from 'aws-sdk'
+import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import formidable from 'formidable';
 import { IncomingForm } from 'formidable';
 import { RawVideo, dbConnect } from 'db';
 import middle from '../auth/middle';
 import { rawVideo } from 'zodTypes';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-const { AWS_REGION, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET_NAME } = process.env;
+const { AWS_REGION, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET_NAME, AWS_ENDPOINT } = process.env;
 
-const s3Client = new AWS.S3({
-    // endpoint,
+const s3Client = new S3Client({
     region: AWS_REGION,
     credentials: {
         accessKeyId: AWS_ACCESS_KEY,
         secretAccessKey: AWS_SECRET_KEY
     }
-});
+})
+
+AWS.config.update({
+    accessKeyId: AWS_ACCESS_KEY,
+    secretAccessKey: AWS_SECRET_KEY,
+  });
 
 export const config = {
     api: {
@@ -45,6 +51,7 @@ export default async function handler(req, res) {
                     return res.status(400).json({ message: 'Raw Videos file missing' });
                 }
                 console.log(files)
+                const s3 = new AWS.S3();
 
                 const videoFile = files.rawVideos[0];
                 const videoStream = fs.createReadStream(videoFile.filepath);
@@ -62,28 +69,30 @@ export default async function handler(req, res) {
                 }
                 const { _id } = req.headers;
                 
-                // try {
-                    //     const uploadResponse = await s3Client.upload(uploadParams).promise();
+                try {
+                        // const uploadResponse = await s3.upload(uploadParams).promise();
                     
-                    //     // Generate a signed URL for the uploaded object
-                    //     const signedUrl = s3Client.getSignedUrl('getObject', {
-                        //         Bucket: AWS_BUCKET_NAME,
-                        //         Key: uploadParams.Key,
-                        //         Expires: 3600 * 24 * 100, // URL expiration time in seconds
-                        //     });
+                        // Generate a signed URL for the uploaded object
+                        const commnand = new GetObjectCommand({
+                            Bucket: AWS_BUCKET_NAME,
+                            Key: '2023-CA-Lecture-10.pdf',
+                        })
+                        const signedUrl = await getSignedUrl(s3Client, commnand);
+
+                        console.log(signedUrl)
 
                         // const raw = new RawVideo({...data, videoUrl: signedUrl, creator: _id});
                         // await raw.save();
 
                         
-                        //     // Remove the local file after uploading to S3
-                        // fs.unlinkSync(videoFile.filepath);
+                            // Remove the local file after uploading to S3
+                        fs.unlinkSync(videoFile.filepath);
                     
-                //     return res.status(200).json({ message: 'Upload successful', url: uploadResponse.Location, rawVideo: raw });
-                // } catch (error) {
-                //     console.error('S3 upload error:', error);
-                //     return res.status(500).json({ message: 'Upload failed' });
-                // }
+                    // return res.status(200).json({ message: 'Upload successful', url: uploadResponse.Location, rawVideo: raw });
+                } catch (error) {
+                    console.error('S3 upload error:', error);
+                    return res.status(500).json({ message: 'Upload failed' });
+                }
                 
             })
         })
