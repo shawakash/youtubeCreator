@@ -77,9 +77,9 @@ const VideoUploader = () => {
                   }
                 }).then(response => {
                   if (response.status == 200) {
-                    setAllRawVideos(pre => [...pre, { ...data, _id: response.data._id }]);
+                    setAllRawVideos(pre => [...pre, { ...data, _id: response.data._id, isUploaded: false, isEdited: false }]);
                     toast.success(response.data.message);
-                    // router.push('/video/allRawVideo');
+                    router.push('/videos/raw');
                   }
                 }).catch(err => {
                   if (err) {

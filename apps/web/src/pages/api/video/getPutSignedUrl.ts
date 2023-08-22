@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
         await dbConnect();
 
-        tokenValidator(req, res, async () => {
+        middle(req, res, async () => {
             
             const { key, bucketname, expiresin } = req.headers; // The object key for the video in S3
             console.log(key, bucketname)
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
                 Bucket: bucketname, // Replace with your S3 bucket name
                 Key: key,
                 ContentType: 'video/*',
-                Expires: 3600, // URL expiration time in seconds (1 hour)
+                Expires: parseInt(expiresin as string), // URL expiration time in seconds (1 hour)
             };
 
             try {

@@ -29,7 +29,7 @@ const editorSchema = new mongoose.Schema({
 
 const rawVideoSchema = new mongoose.Schema({
     thumbnail: {type: String, required: true, },
-    title: {type: String, required: true, unique: true},
+    title: { type: String, required: true },
     description: {type: String, required: true}, // Html kind page
     videoKey: { type: String, required: true },
     bucketName: { type: String, required: true },

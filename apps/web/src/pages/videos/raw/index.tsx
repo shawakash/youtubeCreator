@@ -3,20 +3,26 @@ import { GetServerSidePropsContext } from 'next';
 import cookie from 'cookie';
 import protection from '../../../../utils/protection';
 import axios from 'axios';
+import { useRecoilState } from 'recoil';
+import { allRawVideo } from 'store';
+import { RawVideoType } from 'zodTypes';
+import { VideoCard } from 'ui';
 
-const index = ({ videos }) => {
-  const [localraw, setRaw] = useState([]);
+const index: React.FC<{ videos: RawVideoType[] }> = ({ videos }) => {
+  const [rawVideos, setRawVideos] = useRecoilState(allRawVideo)
 
   useEffect(() => {
     if(videos) {
-      setRaw(videos);
+      setRawVideos(videos);
     }
   }, []);
-
+  
 
   return (
     <>
-      hello{localraw}
+      <div className="flex flex-wrap p-10 gap-8 justify-center items-center h-screen bg-gray-100">
+        {rawVideos.length > 0 && rawVideos.map(rv => <VideoCard key={rv._id} video={rv} />)}
+      </div>
     </>
   )
 }
@@ -39,7 +45,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
      });
     return {
       props: {
-        videos: JSON.stringify(response.data.raw)
+        videos: response.data.raw
       }
     }
     

@@ -37,6 +37,7 @@ export interface CreatorType extends creatorSignup {
     videos: string[],
     refreshToken: string,
     accessToken: string,
+    hasAllowed: boolean,
     _id: string
 }
 
@@ -70,6 +71,6 @@ export interface RawVideoType extends rawVideoInputType {
     creator: string,
     editor: string,
     isEdited: boolean,
-    isUploaded: boolean,
-    hasAllowed: boolean
+    isUploaded: boolean, 
+    url: string
 }

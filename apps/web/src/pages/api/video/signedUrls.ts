@@ -17,7 +17,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         middle(req, res, async () => {
             const expiresin = 3600 * 24 * 4;
             const rawVideos = req.body;
-            rawVideos.map( async (rv: RawVideoType) => {
+            for(let i of rawVideos) {
                 try {
                     const response = await axios({
                         baseURL: BASEURL,
@@ -25,22 +25,20 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
                         method: "GET",
                         headers: {
                             'Authorization': req.headers.authorization,
-                            'videofilekey': rv.videoKey,
-                            'bucketname': rv.bucketName,
+                            'videofilekey': i.videoKey,
+                            'bucketname': i.bucketName,
                             'expiresin': expiresin,
                             'Content-Type': 'application/json'
                         }
                     });
                     const url = response.data.signedUrl;
-                    rv['url'] = url;
-                    return rv;
+                    i.url = url;
                     
                 } catch (error) {
-                    rv['url'] = '';
-                    return rv;
+                    i.url = '';
+                    console.log(error)
                 }
-            });
-
+            }
             return res.status(200).json({ message: 'Signed Urls', rawVideos })
         })
     } catch (error) {
