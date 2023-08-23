@@ -6,6 +6,11 @@ export const creatorIdAtom = atom({
     default: null
 });
 
+export const editorIdAtom = atom({
+    key: 'editorIdAtom',
+    default: null
+})
+
 export const allRawVideo = atom({
     key: 'allRawVideo',
     default: []

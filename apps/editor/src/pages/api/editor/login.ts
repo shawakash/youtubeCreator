@@ -1,4 +1,4 @@
-import { Creator, dbConnect } from "db";
+import { Editor, dbConnect } from "db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { LoginValid } from "zodTypes";
 import jwt from 'jsonwebtoken';
@@ -12,9 +12,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         await dbConnect();
 
-        const { CREATOR_SECRET } = process.env;
-        if (!CREATOR_SECRET || CREATOR_SECRET.length == 0) {
-            throw new Error('Please define the CREATOR_SECRET environment variable');
+        const { EDITOR_SECRET } = process.env;
+        if (!EDITOR_SECRET || EDITOR_SECRET.length == 0) {
+            throw new Error('Please define the EDITOR_SECRET environment variable');
         }
 
         const parsedInput = LoginValid.safeParse(req.body);
@@ -22,16 +22,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(400).json({ message: 'Validator Error' });
         }
         const { username, password } = parsedInput.data;
-        const isCreator = await Creator.findOne({ username });
-        if(!isCreator) {
+        const isEditor = await Editor.findOne({ username });
+        if(!isEditor) {
             return res.status(404).json({ message: "Please Signup" });
         }
-        if(isCreator.password !== password) {
+        if(isEditor.password !== password) {
             return res.status(400).json({ message: 'Wrong password :(' });
         }
-        const token = jwt.sign({ _id: isCreator._id }, CREATOR_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ _id: isEditor._id }, EDITOR_SECRET, { expiresIn: '1h' });
 
-        const cookieSerialized = serialize('creatorToken', token, {
+        const cookieSerialized = serialize('editorToken', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         
         res.setHeader('Set-Cookie', cookieSerialized);
 
-        return res.status(200).json({ message: 'LoggedIn Created Succesfully', token })
+        return res.status(200).json({ message: 'LoggedIn Succesfully', token })
 
     } catch (error) {
         console.log(error)

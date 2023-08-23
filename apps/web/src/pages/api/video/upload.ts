@@ -69,7 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     console.log(videoFilePath)
                     const response2 = await youtube.videos.insert({
                         auth: oauth2Client,
-                        part: ['snippet','status'],
+                        part: ['snippet,status'],
                         requestBody: videoDetails,
                         media: {
                             mimeType: 'video/*', // Change this according to your video's MIME type

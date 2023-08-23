@@ -2,10 +2,18 @@ import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 import middle from './middle';
 import { Creator, dbConnect } from 'db';
-import { OAuth2Client } from 'google-auth-library';
+import { google } from 'googleapis';
+
+// Configure OAuth2 client
+const { REDIRECT_URI, CLIENT_ID, CLIENT_SECRET } = process.env;
+const oauth2Client = new google.auth.OAuth2(
+    CLIENT_ID,
+    CLIENT_SECRET,
+    REDIRECT_URI
+);
 
 const tokenValidator = async (req: NextApiRequest, res: NextApiResponse, next: () => void) => {
-    
+
     await dbConnect();
     try {
 
@@ -25,19 +33,11 @@ const tokenValidator = async (req: NextApiRequest, res: NextApiResponse, next: (
             const creator = await Creator.findById(_id);
 
             let { accessToken, refreshToken } = creator;
-            if(!accessToken || !refreshToken || accessToken.length === 0 || refreshToken.length === 0) {
+            if (!accessToken || !refreshToken || accessToken.length === 0 || refreshToken.length === 0) {
                 return res.status(400).json({ message: 'Please Get Auth First' });
             }
 
-            // const oauth2Client = new OAuth2Client(
-            //     CLIENT_ID,
-            //     CLIENT_SECRET,
-            //     REDIRECT_URI
-            // );
-            // oauth2Client.setCredentials({
-            //     access_token: accessToken as string,
-            //     refresh_token: refreshToken as string,
-            // });
+           
 
             const response = await axios.post(OUTH_TOKEN_VALID_URL, {
                 access_token: accessToken,
@@ -48,17 +48,29 @@ const tokenValidator = async (req: NextApiRequest, res: NextApiResponse, next: (
             // const isValid = response.data.isValid; // Adjust based on the response format
             // console.log(response);
             if (!isValid) {
-                // const tokenResponse = await oauth2Client.refreshAccessToken();
-                // const newAccessToken = tokenResponse.credentials.access_token;
-                // oauth2Client.setCredentials({
-                //     access_token: newAccessToken,
-                //     refresh_token: refreshToken as string,
-                // });
-                // creator.accessToken = newAccessToken;
-                // accessToken = newAccessToken;
-                // await creator.save();
-                // res.redirect('/auth');
-                return res.status(401).json({ message: 'Token expired' });
+                console.log('Token Expired');
+                console.log('Fetching new token');
+                try {
+                    const response = await axios.post('https://oauth2.googleapis.com/token', null, {
+                      params: {
+                        client_id: CLIENT_ID,
+                        client_secret: CLIENT_SECRET,
+                        refresh_token: refreshToken,
+                        grant_type: 'refresh_token'
+                      }
+                    });
+                
+                    const newAccessToken = response.data.access_token;
+                    if(newAccessToken) {
+                        accessToken = newAccessToken;
+                        creator.accessToken = newAccessToken;
+                        await creator.save();
+                    }
+                  } catch (error) {
+                    console.error('Error fetching new access token:', error);
+                    
+                    return res.status(401).json({ message: 'Token expired, Please re-auth' });
+                  }
             }
             req.headers['accessToken'] = accessToken;
             req.headers['refreshToken'] = refreshToken;
