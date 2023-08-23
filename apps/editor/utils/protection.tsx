@@ -16,7 +16,7 @@ const protection = (WrappedComponent: ComponentType) => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': sessionStorage.getItem('creatorToken')
+          'Authorization': sessionStorage.getItem('editorToken')
         }
       }).then(response => {
         if (!response.data.isValid) {
@@ -36,7 +36,7 @@ const protection = (WrappedComponent: ComponentType) => {
     }
 
     useEffect(() => {
-      if (!sessionStorage.getItem('creatorToken') || sessionStorage.getItem('creatorToken').length == 0) {
+      if (!sessionStorage.getItem('editorToken') || sessionStorage.getItem('editorToken').length == 0) {
         sessionStorage.clear();
         router.push('/login');
       } else {

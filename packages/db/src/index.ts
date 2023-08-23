@@ -24,7 +24,7 @@ const editorSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     rawVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RawVideo' }],
-    editedVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
+    editedVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'EditedVideo' }],
 }, { timestamps: true });
 
 const rawVideoSchema = new mongoose.Schema({

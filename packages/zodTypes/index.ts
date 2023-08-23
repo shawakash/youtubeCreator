@@ -80,8 +80,8 @@ export type editVideoInputType = z.infer<typeof editVideo>;
 
 export interface RawVideoType extends rawVideoInputType {
   _id: string,
-  creator: string,
-  editor: string,
+  creator: CreatorType,
+  editor: EditorType,
   isEdited: boolean,
   isUploaded: boolean,
   url: string
@@ -89,8 +89,8 @@ export interface RawVideoType extends rawVideoInputType {
 
 export interface EditVideoType extends editVideoInputType {
   _id: string,
-  creator: string,
-  editor: string,
+  creator: CreatorType,
+  editor: EditorType,
   isUploaded: boolean,
   url: string
 }

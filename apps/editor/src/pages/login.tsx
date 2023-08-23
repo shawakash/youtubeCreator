@@ -43,7 +43,7 @@ const login = () => {
     }
 
     useEffect(() => {
-        if (sessionStorage.getItem('creatorToken')) {
+        if (sessionStorage.getItem('editorToken')) {
             sessionStorage.clear()
             setEditorId(null);
             toast.success('Clearing Session :)');

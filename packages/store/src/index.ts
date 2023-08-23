@@ -16,7 +16,17 @@ export const allRawVideo = atom({
     default: []
 });
 
+export const allRawVideoEditor = atom({
+    key: 'allRawVideoEditor',
+    default: []
+});
+
 export const allEditVideo = atom({
     key: 'allEditVideo',
     default: []
 });
+
+export const editorEditedVideos = atom({
+    key: 'editorEditedVideos',
+    default: []
+})
