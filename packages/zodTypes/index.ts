@@ -103,3 +103,16 @@ export const fetchVideoBody = z.object({
 });
 
 export type fetchVideoReqType = z.infer<typeof fetchVideoBody>;
+
+export const legerBody = z.object({
+  rawVideo: z.string(),
+  creator: z.string()
+});
+
+export type legerInType = z.infer<typeof legerBody>;
+
+export interface legerType extends legerInType {
+  _id: string,
+  editor: string,
+  editors: string[]
+}

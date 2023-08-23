@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Video } from 'ui';
-import { useRecoilState } from 'recoil';
-import { allRawVideoEditor } from 'store';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { allRawVideoEditor, legerAtom } from 'store';
 import { toast } from 'react-hot-toast';
-import { RawVideoType, fetchVideoReqType } from 'zodTypes';
+import { RawVideoType, fetchVideoReqType, legerInType } from 'zodTypes';
 import { GetServerSidePropsContext } from 'next/types';
 import axios from 'axios';
 import cookie from 'cookie';
 
 
-const VideoPage = ({ video }) => {
+const VideoPage = ({ video, hasApplied }) => {
   const [localVideo, setVideo] = useState<RawVideoType>();
   const router = useRouter();
   const { videoId } = router.query;
+  const setLeger = useSetRecoilState(legerAtom);
   // const [rawVideos, setRawVideos] = useRecoilState<RawVideoType[]>(allRawVideoEditor);
 
   useEffect(() => {
@@ -29,14 +30,43 @@ const VideoPage = ({ video }) => {
   }, []);
 
   const handleLeger = () => {
-    const 
+    console.log(typeof localVideo._id)
+    console.log(typeof localVideo.creator._id)
+    const data: legerInType = {
+      rawVideo: localVideo._id,
+      creator: localVideo.creator._id
+    };
+    axios({
+      baseURL: 'http://localhost:3000/api',
+      url: '/video/addToLeger',
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': sessionStorage.getItem('editorToken')
+      },
+      data: data
+    }).then(response => {
+      setLeger(legers => [...legers, response.data.leger]);
+      toast.success(response.data.message);
+      router.push('/videos/leger');
+    }).catch(err => {
+      if(err) {
+        if(err.response) {
+          toast.error(err.response.data.message);
+          router.push('/videos/leger');
+          return;
+        }
+          toast.error(err.message);
+          console.log(err);
+      }
+    })
   }
 
   return (
     <>
     <div className="h-screen bg-gray-100 flex justify-around items-center">
 
-      {localVideo && <Video video={localVideo} type={'raw'} handleLeger={handleLeger} />}
+      {localVideo && <Video video={localVideo} hasApplied={hasApplied}  type={'raw'} handleLeger={handleLeger} />}
     </div>
     </>
   )
@@ -66,10 +96,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         'Authorization': token
       }
     });
+
     
     return {
       props: {
-        video: response.data.video
+        video: response.data.video,
+        hasApplied: response.data.hasApplied
       }
     }
 

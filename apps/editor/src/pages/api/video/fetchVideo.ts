@@ -1,4 +1,4 @@
-import { EditedVideo, RawVideo, dbConnect } from "db";
+import { EditedVideo, Leger, RawVideo, dbConnect } from "db";
 import middle from "../middle";
 import { NextApiRequest, NextApiResponse } from "next";
 import { EditVideoType, RawVideoType, fetchVideoBody } from "zodTypes";
@@ -17,14 +17,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         middle(req, res, async () => {
+            const { _id } = req.headers;
             const parsedInput = fetchVideoBody.safeParse(req.body);
             if (!parsedInput.success) {
                 return res.status(400).json({ message: 'Validation Error', err: parsedInput });
             }
             const { videoId, type } = parsedInput.data;
-            let video: RawVideoType | EditVideoType;
+            let video;
+            let hasApplied = false;
             if (type === 'raw') {
-                video = await RawVideo.findById(videoId);
+                video = await RawVideo.findById(videoId).populate([{ path: 'creator' }, { path: 'editor' }]);
+                const leger = await Leger.findOne({ rawVideo: videoId, editors: { $in: [_id] } });
+                if(leger) {
+                    hasApplied = true;
+                }
             } else if (type === 'edit') {
                 video = await EditedVideo.findById(videoId);
             }
@@ -47,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 });
                 const url = response.data.signedUrl;
                 video.url = url;
-                return res.status(200).json({ message: 'Found', video });
+                return res.status(200).json({ message: 'Found', video, hasApplied });
                 
             } catch (error) {
                 video['url'] = '';

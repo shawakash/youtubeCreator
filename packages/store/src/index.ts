@@ -29,4 +29,9 @@ export const allEditVideo = atom({
 export const editorEditedVideos = atom({
     key: 'editorEditedVideos',
     default: []
-})
+});
+
+export const legerAtom = atom({
+    key: 'legerAtom',
+    default: []
+});
