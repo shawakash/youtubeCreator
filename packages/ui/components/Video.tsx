@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { EditVideoType, RawVideoType } from 'zodTypes';
 
-export const Video: React.FC<{ video: RawVideoType | EditVideoType, type: string }> = ({ video , type='raw'}) => {
+export const Video: React.FC<{ video: RawVideoType | EditVideoType, type: string, handleLeger: () => void }> = ({ video , type='raw', handleLeger}) => {
 
   useEffect(() => {
 
@@ -26,8 +26,10 @@ export const Video: React.FC<{ video: RawVideoType | EditVideoType, type: string
           <p className="text-gray-500 mt-2">
             Uploaded by: {video.creator.name}
           </p>
+          <button onClick={handleLeger} className="bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 duration-300 w-fit hover:scale-105 active:scale-95 transition-all">Add to Leger</button>
         </div>
       </div>}
     </>
   )
 }
+

@@ -28,7 +28,7 @@ const login = () => {
             sessionStorage.setItem('editorToken', response.data.token)
             setEditorId(response.data._id);
             toast.success(response.data.message);
-            router.push('/raw');
+            router.push('/videos/raw');
         }).catch(err => {
             if (err) {
                 if (err.response) {

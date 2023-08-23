@@ -46,7 +46,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
      });
     return {
       props: {
-        videos: response.data.raw
+        videos: response.data.videos
       }
     }
     

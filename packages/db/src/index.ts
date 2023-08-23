@@ -39,7 +39,8 @@ const rawVideoSchema = new mongoose.Schema({
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'Creator' },
     editor: { type: mongoose.Schema.Types.ObjectId, ref: 'Editor' },
     isEdited: { type: Boolean, default: false },
-    isUploaded: { type: Boolean, default: false }
+    isUploaded: { type: Boolean, default: false },
+    url: {type: String}
 }, { timestamps: true });
 
 const editedVideosSchema = new mongoose.Schema({
@@ -53,8 +54,16 @@ const editedVideosSchema = new mongoose.Schema({
     deadLineTime: {type: String, required: true},
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'Creator' },
     editor: { type: mongoose.Schema.Types.ObjectId, ref: 'Editor' },
-    isUploaded: { type: Boolean, default: false }
-}, { timestamps: true })
+    isUploaded: { type: Boolean, default: false },
+    url: {type: String}
+}, { timestamps: true });
+
+const legerSchema = new mongoose.Schema({
+    rawVideo: { type: mongoose.Schema.Types.ObjectId, ref: 'RawVideo', required: true },
+    editors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Editor' }],
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'Creator', required: true },
+    editor: { type: mongoose.Schema.Types.ObjectId, ref: 'Editor' }
+}, { timestamps: true });
 
 const getModel = (modelName: any, schema: any) => {
     try {
@@ -69,6 +78,7 @@ export const Creator = getModel('Creator', creatorSchema);
 export const Editor = getModel('Editor', editorSchema);
 export const RawVideo = getModel('RawVideo', rawVideoSchema);
 export const EditedVideo = getModel('EditedVideo', editedVideosSchema);
+export const Leger = getModel('Leger', legerSchema);
 
 
 export const dbConnect = () => {

@@ -94,3 +94,12 @@ export interface EditVideoType extends editVideoInputType {
   isUploaded: boolean,
   url: string
 }
+
+export const fetchVideoBody = z.object({
+  videoId: z.string(),
+  type: z.string().refine(value => value === 'raw' || value === 'edit', {
+    message: 'Value must be either "raw" or "edit"',
+  })
+});
+
+export type fetchVideoReqType = z.infer<typeof fetchVideoBody>;

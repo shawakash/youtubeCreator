@@ -6,7 +6,7 @@ import { useRecoilState } from 'recoil';
 import { allRawVideoEditor } from 'store';
 import { RawVideoType } from 'zodTypes';
 import { VideoCard } from 'ui';
-import protection from '../../../utils/protection';
+import protection from '../../../../utils/protection';
 
 const index: React.FC<{ videos: RawVideoType[] }> = ({ videos }) => {
   const [rawVideos, setRawVideos] = useRecoilState(allRawVideoEditor)

@@ -4,7 +4,7 @@ import { RawVideoType } from 'zodTypes';
 
 export const VideoCard: React.FC<{ video: RawVideoType, type: string, }> = ({ video, type = 'raw' }) => {
   return (
-    <Link href={`/${type}/${video._id}`}>
+    <Link href={`/videos/${type}/${video._id}`}>
       <div className="bg-white rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 overflow-hidden">
         <div className="relative">
           <div className="aspect-w-16 aspect-h-9">

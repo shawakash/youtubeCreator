@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from 'next/document'
+import { RecoilRoot } from 'recoil'
 
 export default function Document() {
   return (
@@ -6,7 +7,9 @@ export default function Document() {
       <Head />
       <body>
         <Main />
-        <NextScript />
+        <RecoilRoot>
+          <NextScript />
+        </RecoilRoot>
       </body>
     </Html>
   )
