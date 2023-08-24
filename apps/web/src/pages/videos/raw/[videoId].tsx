@@ -10,12 +10,11 @@ import axios from 'axios';
 import cookie from 'cookie';
 
 
-const VideoPage = ({ video, hasApplied }) => {
+const VideoPage = ({ video, editors, editor }) => {
   const [localVideo, setVideo] = useState<RawVideoType>();
   const router = useRouter();
   const { videoId } = router.query;
   const setLegers = useSetRecoilState(legersAtom);
-  // const [rawVideos, setRawVideos] = useRecoilState<RawVideoType[]>(allRawVideoEditor);
 
   useEffect(() => {
     if(videoId) {
@@ -29,38 +28,7 @@ const VideoPage = ({ video, hasApplied }) => {
     }
   }, []);
 
-  const handleLeger = () => {
-    console.log(typeof localVideo._id)
-    console.log(typeof localVideo.creator._id)
-    const data: legerInType = {
-      rawVideo: localVideo._id,
-      creator: localVideo.creator._id
-    };
-    axios({
-      baseURL: 'http://localhost:3000/api',
-      url: '/video/addToLeger',
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': sessionStorage.getItem('editorToken')
-      },
-      data: data
-    }).then(response => {
-      setLegers(legers => [...legers, response.data.leger]);
-      toast.success(response.data.message);
-      router.push('/videos/leger');
-    }).catch(err => {
-      if(err) {
-        if(err.response) {
-          toast.error(err.response.data.message);
-          router.push('/videos/leger');
-          return;
-        }
-          toast.error(err.message);
-          console.log(err);
-      }
-    })
-  }
+  
 
   const removeFromLeger = () => {
     
@@ -70,7 +38,6 @@ const VideoPage = ({ video, hasApplied }) => {
     <>
     <div className="h-screen bg-gray-100 flex justify-around items-center">
 
-      {localVideo && <Video removeFromLeger={removeFromLeger} video={localVideo} hasApplied={hasApplied}  type={'raw'} addToLeger={handleLeger} />}
     </div>
     </>
   )
@@ -82,7 +49,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const cookies = context.req.headers.cookie;
   const parsedCookies = cookie.parse(cookies || '');
-  const token = parsedCookies.editorToken;
+  const token = parsedCookies.creatorToken;
 
   const data: fetchVideoReqType = {
     videoId: videoId as string,
@@ -105,14 +72,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     return {
       props: {
         video: response.data.video,
-        hasApplied: response.data.hasApplied
+        editors: response.data.editors,
+        editor: response.data.editor
       }
     }
 
   } catch (error) {
     return { 
       props: {
-        video: null
+        video: null,
+        editors: null,
+        editor: null
       }
     }    
   }

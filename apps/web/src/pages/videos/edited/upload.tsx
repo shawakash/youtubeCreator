@@ -65,7 +65,6 @@ const VideoUploader = () => {
                   description: 'First Descriptionvcx',
                   contentType: 'video/mp4',
                   deadLineDate: '22043/3/23',
-                  deadLineTime: '01:00'
                 }
                 axios({
                   baseURL: BASEURL || 'http://localhost:3000/api',

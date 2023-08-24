@@ -7,11 +7,12 @@ import { allRawVideo } from 'store';
 import { rawVideoInputType } from 'zodTypes';
 import protection from '../../../../utils/protection';
 import { FileUpload } from 'primereact/fileupload';
+import { UploadForm } from 'ui';
 
 
 
 const VideoUploader = () => {
-  const rawVideo = useRef(null);
+  const rawVideo = useRef<HTMLInputElement | null>(null);
 
   const setAllRawVideos = useSetRecoilState(allRawVideo);
   const router = useRouter();
@@ -19,17 +20,20 @@ const VideoUploader = () => {
   const { BASEURL, AWS_RAW_VIDEO_BUCKET_NAME } = process.env;
 
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
+  const handleUpload = async (data: rawVideoInputType) => {
+
+
     const selectedVideo = rawVideo.current;
-    console.log(selectedVideo);
+    // console.log(selectedVideo); 
 
 
 
     if (selectedVideo) {
 
       const currentDate = new Date().toISOString().replace(/[-:.]/g, '');
-      const key = `${selectedVideo.name}-${currentDate}`;
+      const key = `${data.videoKey}-${currentDate}`;
+      data.videoKey = key;
+
       axios({
         baseURL: BASEURL || 'http://localhost:3000/api',
         url: '/video/getPutSignedUrl',
@@ -38,11 +42,10 @@ const VideoUploader = () => {
           'Content-Type': 'application/json',
           'Authorization': sessionStorage.getItem('creatorToken'),
           'key': key,
-          'bucketname': 'creator-raw-videos'
+          'bucketname': data.bucketName
         }
       })
         .then(response => {
-          console.log(response.data);
 
           if (response.status == 200) {
             axios({
@@ -56,16 +59,6 @@ const VideoUploader = () => {
 
               if (response.status == 200) {
 
-                const data: rawVideoInputType = {
-                  thumbnail: 'First Uploadvcx',
-                  title: 'First Titlevc',
-                  videoKey: key,
-                  bucketName: 'creator-raw-videos',
-                  description: 'First Descriptionvcx',
-                  contentType: 'video/mp4',
-                  deadLineDate: '22043/3/23',
-                  deadLineTime: '01:00'
-                }
                 axios({
                   baseURL: BASEURL || 'http://localhost:3000/api',
                   url: '/video/addRawCredential',
@@ -87,7 +80,7 @@ const VideoUploader = () => {
                       toast.error(err.response.data.message);
                       sessionStorage.clear()
                       router.push('/login');
-                    } else if(err.response.status == 401) {
+                    } else if (err.response.status == 401) {
                       toast.error('Please first allow us your youtube access');
                       router.push('/auth')
                     }
@@ -135,24 +128,11 @@ const VideoUploader = () => {
 
 
   return (
-    <div>
-      <h2>Upload a Video</h2>
-
-      <div>
-        <h2>Upload Video</h2>
-        <form onSubmit={handleUpload}>
-          <input
-            ref={rawVideo}
-            type="file"
-            name="rawVideos"
-            accept="video/*"
-          />
-          <button type="submit">Upload</button>
-        </form>
+    <>
+      <div className="h-screen bg-gray-100 flex justify-center items-center">
+        <UploadForm propData={handleUpload} fileRef={rawVideo} type='raw' client='creator' />
       </div>
-
-
-    </div>
+    </>
   );
 };
 

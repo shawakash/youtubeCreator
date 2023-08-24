@@ -35,11 +35,11 @@ const rawVideoSchema = new mongoose.Schema({
     bucketName: { type: String, required: true },
     contentType: {type: String, required: true},
     deadLineDate: {type: String, required: true},
-    deadLineTime: {type: String, required: true},
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'Creator' },
     editor: { type: mongoose.Schema.Types.ObjectId, ref: 'Editor' },
     isEdited: { type: Boolean, default: false },
     isUploaded: { type: Boolean, default: false },
+    noteToEditor: { type: String, required: true },
     url: {type: String}
 }, { timestamps: true });
 
