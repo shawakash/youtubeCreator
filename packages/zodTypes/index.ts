@@ -111,8 +111,10 @@ export const legerBody = z.object({
 
 export type legerInType = z.infer<typeof legerBody>;
 
-export interface legerType extends legerInType {
+export interface legerType {
   _id: string,
   editor: string,
-  editors: string[]
+  editors: EditorType[],
+  rawVideo: RawVideoType,
+  creator: CreatorType
 }

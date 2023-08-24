@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Video } from 'ui';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { allRawVideoEditor, legerAtom } from 'store';
+import { allRawVideoEditor, legersAtom } from 'store';
 import { toast } from 'react-hot-toast';
 import { RawVideoType, fetchVideoReqType, legerInType } from 'zodTypes';
 import { GetServerSidePropsContext } from 'next/types';
@@ -14,7 +14,7 @@ const VideoPage = ({ video, hasApplied }) => {
   const [localVideo, setVideo] = useState<RawVideoType>();
   const router = useRouter();
   const { videoId } = router.query;
-  const setLeger = useSetRecoilState(legerAtom);
+  const setLegers = useSetRecoilState(legersAtom);
   // const [rawVideos, setRawVideos] = useRecoilState<RawVideoType[]>(allRawVideoEditor);
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const VideoPage = ({ video, hasApplied }) => {
       },
       data: data
     }).then(response => {
-      setLeger(legers => [...legers, response.data.leger]);
+      setLegers(legers => [...legers, response.data.leger]);
       toast.success(response.data.message);
       router.push('/videos/leger');
     }).catch(err => {

@@ -31,7 +31,7 @@ export const editorEditedVideos = atom({
     default: []
 });
 
-export const legerAtom = atom({
-    key: 'legerAtom',
+export const legersAtom = atom({
+    key: 'legersAtom',
     default: []
 });
