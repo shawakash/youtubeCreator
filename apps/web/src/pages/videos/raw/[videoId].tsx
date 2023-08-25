@@ -1,33 +1,63 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Video } from 'ui';
+import { UpdateForm, Video, VideoCard } from 'ui';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { allRawVideoEditor, legersAtom } from 'store';
+import { allRawVideo, allRawVideoEditor, legersAtom } from 'store';
 import { toast } from 'react-hot-toast';
-import { RawVideoType, fetchVideoReqType, legerInType } from 'zodTypes';
+import { RawVideoType, UpdateVideoType, fetchVideoReqType, legerInType, rawVideo } from 'zodTypes';
 import { GetServerSidePropsContext } from 'next/types';
 import axios from 'axios';
 import cookie from 'cookie';
 
 
-const VideoPage = ({ video, editors, editor }) => {
+const VideoPage = ({  leger }) => {
   const [localVideo, setVideo] = useState<RawVideoType>();
   const router = useRouter();
-  const { videoId } = router.query;
-  const setLegers = useSetRecoilState(legersAtom);
+  const setAllRawVideos = useSetRecoilState(allRawVideo);
+  // const setLegers = useSetRecoilState(legersAtom);
+  // const 
 
   useEffect(() => {
-    if(videoId) {
-      // const video = rawVideos.find(raw => raw._id == videoId);
-      if(!video) {
+      if(!leger) {
         toast.error('Server Error');
         router.back();
-      } if(video) {
-        setVideo(video);
+      } if(leger) {
+        console.log(leger.rawVideo)
+        setVideo(leger.rawVideo);
       }
-    }
   }, []);
 
+  const handleUpdate = (data: UpdateVideoType) => {
+    axios({
+      baseURL: 'http://localhost:3000/api',
+      url: '/video/update',
+      method: 'PUT',
+      headers: {
+        'Authorization': sessionStorage.getItem('creatorsToken'),
+        'Content-Type': 'application/json',
+        'type': 'raw',
+        'videoKey': localVideo.videoKey,
+        'bucketName': localVideo.bucketName
+      },
+      data: data
+    }).then(response => {
+
+      setAllRawVideos(pre => {
+        let prev = pre.find(c => c.videoKey == localVideo.videoKey);
+        prev = {...prev, ...data};
+        return pre;
+      });
+
+      setVideo(prevVideo => {
+        return { ...prevVideo, ...data }
+      });
+
+      toast.success(response.data.message)
+
+    }).catch(error => {
+      console.error(error);
+    })
+  }
   
 
   const removeFromLeger = () => {
@@ -37,7 +67,8 @@ const VideoPage = ({ video, editors, editor }) => {
   return (
     <>
     <div className="h-screen bg-gray-100 flex justify-around items-center">
-
+      {leger && localVideo && <VideoCard video={localVideo} type='raw' clientId={leger.creator._id} client='creator' page='video' />}
+      {localVideo && <UpdateForm video={localVideo} type='raw' propData={handleUpdate} />  }
     </div>
     </>
   )
@@ -71,18 +102,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     
     return {
       props: {
-        video: response.data.video,
-        editors: response.data.editors,
-        editor: response.data.editor
+        leger: response.data.video
       }
     }
 
   } catch (error) {
+    console.error(error)
     return { 
       props: {
-        video: null,
-        editors: null,
-        editor: null
+        leger: null
       }
     }    
   }

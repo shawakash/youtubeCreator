@@ -118,3 +118,5 @@ export interface legerType {
   rawVideo: RawVideoType,
   creator: CreatorType
 }
+
+export type UpdateVideoType = Partial<Omit<RawVideoType & EditVideoType, 'videoKey' | 'bucketName' | '_id' >>

@@ -20,7 +20,7 @@ export const Nav: React.FC<{client: string, id: string}> = ({ client, id }) => {
 
     return (
         <>
-            <header className="bg-white shadow-md py-4 sticky top-0 opacity-90">
+            <header className="bg-white shadow-md py-4 z-50 sticky top-0 opacity-90">
                 <div className="container mx-auto px-4">
                     <nav className="flex items-center justify-between">
                         <Link href={'/'}><div className="text-xl font-semibold">Creators</div></Link>

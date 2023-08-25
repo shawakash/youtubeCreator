@@ -72,10 +72,10 @@ const VideoUploader = () => {
                 }).then(response => {
                   if (response.status == 200) {
                     if(type.current.value == 'raw') {
-                      setAllRawVideos(pre => [...pre, { ...data, _id: response.data._id, isUploaded: false, isEdited: false }]);
+                      setAllRawVideos(pre => [...pre, { ...data, _id: response.data._id, creator: response.data.creator, editor: response.data.editor, isUploaded: false, isEdited: false, url: response.data.url }]);
                     } else if(type.current.value == 'edit') {
 
-                      setAllEditVideos(pre => [...pre, { ...data, _id: response.data._id, isUploaded: false, isEdited: true }]);
+                      setAllEditVideos(pre => [...pre, { ...data, _id: response.data._id, creator: response.data.creator, editor: response.data.editor, isUploaded: false, isEdited: true , url: response.data.url}]);
                       
                     }
                     toast.success(response.data.message);

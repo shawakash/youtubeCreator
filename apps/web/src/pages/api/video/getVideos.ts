@@ -23,21 +23,16 @@ export default async function handler(req, res) {
             if (type === 'raw') {
                 videos = await RawVideo.find({
                     _id: { $in: creator.rawVideos },
-                })
-                    .populate('editor')
-                    .populate('creator');
+                }).populate([{ path: 'creator' }, { path: 'editor' }]);
 
             } else if (type === 'edit') {
                 videos = await EditedVideo.find({
                     _id: { $in: creator.editedVideos },
-                })
-                    .populate('editor')
-                    .populate('creator');
+                }).populate([{ path: 'creator', select: ['username', '_id', 'rawVideos', 'editedVideos', 'name', 'email'] }, { path: 'editor', select: ['username', '_id', 'editedVideos', 'name', 'email'] }]);
             }
             if (videos.length == 0) {
                 return res.status(200).json({ message: 'Please Upload Some Videos', videos: videos });
             }
-
             try {
                 const response = await axios({
                     baseURL: BASEURL,

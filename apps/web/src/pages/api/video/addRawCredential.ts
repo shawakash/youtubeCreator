@@ -19,14 +19,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
             const { _id } = req.headers;
 
-            const creator = await Creator.findById(_id);
-
+            const creator = await Creator.findById(_id).select(['username', 'email', 'name', '_id', 'rawVideos']);
+            console.log(creator)
             const raw = new RawVideo({...parsedInput.data, creator: _id});
             await raw.save();
             creator.rawVideos.push(raw._id);
             await creator.save();
 
-            return res.status(200).json({ message: 'Raw Video Uploaded Successfully'}); 
+            const response = await axios({
+                baseURL: BASEURL,
+                url: '/video/getSignedUrl',
+                method: 'GET',
+                headers: {
+                    'Authorization': req.headers.authorization,
+                    'Content-Type': 'application/json',
+                    'videofilekey': raw.videoKey,
+                    bucketname: raw.bucketName,
+                    expiresIn: 3600 * 24 * 4
+                }
+            });
+
+            return res.status(200).json({ message: 'Raw Video Uploaded Successfully', _id: raw._id, editor: null, creator: creator, url:  response.data.signedUrl}); 
 
         })
     } catch (error) {

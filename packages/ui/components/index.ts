@@ -6,3 +6,4 @@ export * from './Video';
 export * from './Nav';
 export * from './LegerCard';
 export * from './UploadForm';
+export * from './UpdateForm';

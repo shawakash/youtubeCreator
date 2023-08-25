@@ -19,14 +19,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
             const { _id } = req.headers;
 
-            const creator = await Creator.findById(_id);
+            const creator = await Creator.findById(_id).select(['username', 'email', 'name', '_id', 'editedVideos']);
 
             const edit = new EditedVideo({...parsedInput.data, creator: _id});
             await edit.save();
             creator.editedVideos.push(edit._id);
             await creator.save();
 
-            return res.status(200).json({ message: 'Edit Video Uploaded Successfully to server'}); 
+            const response = await axios({
+                baseURL: BASEURL,
+                url: '/video/getSignedUrl',
+                method: 'GET',
+                headers: {
+                    'Authorization': req.headers.authorization,
+                    'Content-Type': 'application/json',
+                    'videofilekey': edit.videoKey,
+                    bucketname: edit.bucketName,
+                    expiresIn: 3600 * 24 * 4
+                }
+            });
+
+            return res.status(200).json({ message: 'Edit Video Uploaded Successfully to server', creator, _id: edit._id, editor: null, url: response.data.signedUrl}); 
 
         })
     } catch (error) {
