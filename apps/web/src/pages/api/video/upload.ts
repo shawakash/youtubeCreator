@@ -35,6 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             oauth2Client.setCredentials({
                 access_token: accessToken as string,
                 refresh_token: refreshToken as string,
+                
             });
             
 
@@ -72,11 +73,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         part: ['snippet,status'],
                         requestBody: videoDetails,
                         media: {
-                            mimeType: 'video/*', // Change this according to your video's MIME type
+                            mimeType: 'video/mp4', // Change this according to your video's MIME type
                             body: (await axios.get(videoFilePath, { responseType: 'stream' })).data,
                         },
                     });
-
+                    console.log('yes')
                     return res.status(200).json({ message: 'Video uploaded', response2 });
                 }
             } catch (error) {

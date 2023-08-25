@@ -1,36 +1,40 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useSetRecoilState } from 'recoil';
-import { allEditVideo } from 'store';
-import { editVideoInputType } from 'zodTypes';
-import protection from '../../../../utils/protection';
+import { allEditVideo, allRawVideo } from 'store';
+import { editVideoInputType, rawVideoInputType } from 'zodTypes';
+import protection from '../../../utils/protection';
 import { FileUpload } from 'primereact/fileupload';
-import edited from '.';
+import { UploadForm } from 'ui';
 
 
 
 const VideoUploader = () => {
-  const editVideo = useRef(null);
-
-  const setAllEditedVideos = useSetRecoilState(allEditVideo);
+  const video = useRef<HTMLInputElement | null>(null);
+  const type = useRef<HTMLSelectElement | null>(null);
+  const setAllRawVideos = useSetRecoilState(allRawVideo);
+  const setAllEditVideos = useSetRecoilState(allEditVideo);
   const router = useRouter();
 
   const { BASEURL, AWS_RAW_VIDEO_BUCKET_NAME } = process.env;
 
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    const selectedVideo = editVideo.current;
-    console.log(selectedVideo);
+  const handleUpload = async (data: rawVideoInputType | editVideoInputType) => {
+
+
+    let selectedVideo = video.current;
+    // console.log(selectedVideo); 
 
 
 
     if (selectedVideo) {
 
       const currentDate = new Date().toISOString().replace(/[-:.]/g, '');
-      const key = `${selectedVideo.name}-${currentDate}`;
+      const key = `${data.videoKey}-${currentDate}`;
+      data.videoKey = key;
+
       axios({
         baseURL: BASEURL || 'http://localhost:3000/api',
         url: '/video/getPutSignedUrl',
@@ -39,11 +43,10 @@ const VideoUploader = () => {
           'Content-Type': 'application/json',
           'Authorization': sessionStorage.getItem('creatorToken'),
           'key': key,
-          'bucketname': 'creator-edit-video'
+          'bucketname': data.bucketName
         }
       })
         .then(response => {
-          console.log(response.data);
 
           if (response.status == 200) {
             axios({
@@ -57,29 +60,26 @@ const VideoUploader = () => {
 
               if (response.status == 200) {
 
-                const data: editVideoInputType = {
-                  thumbnail: 'First Uploadvcx',
-                  title: 'First Titlevc',
-                  videoKey: key,
-                  bucketName: 'creator-edit-video',
-                  description: 'First Descriptionvcx',
-                  contentType: 'video/mp4',
-                  deadLineDate: '22043/3/23',
-                }
                 axios({
                   baseURL: BASEURL || 'http://localhost:3000/api',
-                  url: '/video/addEditCredential',
+                  url: `/video/add${type.current.value.charAt(0).toUpperCase() + type.current.value.slice(1)}Credential`,
                   method: 'POST',
                   data: data,
                   headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': sessionStorage.getItem('creatorToken')
+                    'Authorization': sessionStorage.getItem('creatorToken'),
                   }
                 }).then(response => {
                   if (response.status == 200) {
-                    setAllEditedVideos(pre => [...pre, { ...data, _id: response.data._id, isUploaded: false }]);
+                    if(type.current.value == 'raw') {
+                      setAllRawVideos(pre => [...pre, { ...data, _id: response.data._id, isUploaded: false, isEdited: false }]);
+                    } else if(type.current.value == 'edit') {
+
+                      setAllEditVideos(pre => [...pre, { ...data, _id: response.data._id, isUploaded: false, isEdited: true }]);
+                      
+                    }
                     toast.success(response.data.message);
-                    router.push('/videos/edited');
+                    router.push('/videos/raw');
                   }
                 }).catch(err => {
                   if (err) {
@@ -87,7 +87,7 @@ const VideoUploader = () => {
                       toast.error(err.response.data.message);
                       sessionStorage.clear()
                       router.push('/login');
-                    } else if(err.response.status == 401) {
+                    } else if (err.response.status == 401) {
                       toast.error('Please first allow us your youtube access');
                       router.push('/auth')
                     }
@@ -135,23 +135,11 @@ const VideoUploader = () => {
 
 
   return (
-    <div>
-
-      <div>
-        <h2>Upload Video</h2>
-        <form onSubmit={handleUpload}>
-          <input
-            ref={editVideo}
-            type="file"
-            name="editVideos"
-            accept="video/*"
-          />
-          <button type="submit">Upload</button>
-        </form>
+    <>
+      <div className="h-screen bg-gray-100 flex justify-center items-center">
+        <UploadForm propData={handleUpload} type={type} fileRef={video} client='creator' />
       </div>
-
-
-    </div>
+    </>
   );
 };
 

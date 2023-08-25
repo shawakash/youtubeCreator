@@ -72,6 +72,7 @@ export const editVideo = z.object({
   description: z.string(), // Html kind page
   contentType: z.string(),
   deadLineDate: z.string(),
+  deadLineTime: z.string() 
 })
 
 export type rawVideoInputType = z.infer<typeof rawVideo>;

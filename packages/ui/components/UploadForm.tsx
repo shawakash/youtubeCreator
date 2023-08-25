@@ -1,14 +1,20 @@
 import React, { FormEvent, useRef, useState } from 'react'
-import { rawVideoInputType } from 'zodTypes';
+import { editVideoInputType, rawVideoInputType } from 'zodTypes';
 
-export const UploadForm: React.FC<{ propData: (data: rawVideoInputType) => void, fileRef: React.MutableRefObject<HTMLInputElement | null>, type: string, client: string }> = ({ type, propData, client, fileRef }) => {
+export const UploadForm: React.FC<{ propData: (data: rawVideoInputType | editVideoInputType) => void, type: React.MutableRefObject<HTMLSelectElement | null>, fileRef: React.MutableRefObject<HTMLInputElement | null>, client: string }> = ({ propData, client, fileRef, type }) => {
     const thumbnailRef = useRef<HTMLInputElement | null>(null);
     const titleRef = useRef<HTMLInputElement | null>(null);
     const descRef = useRef<HTMLTextAreaElement | null>(null);
     const videoName = useRef<HTMLInputElement | null>(null);
     const deadLineDate = useRef<HTMLInputElement | null>(null);
     const noteToEditor = useRef<HTMLTextAreaElement | null>(null);
+    const deadLineTime = useRef<HTMLInputElement | null>(null);
     // const videoRef = useRef<HTMLInputElement | null>(null);
+    const [selectedType, setSelectedType] = useState('raw');
+
+    const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedType(event.target.value);
+    };
 
     const [selectedFileName, setSelectedFileName] = useState<string>('No file selected');
 
@@ -19,16 +25,18 @@ export const UploadForm: React.FC<{ propData: (data: rawVideoInputType) => void,
         }
     };
 
+
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-
+        console.log('hello')
         if (
             titleRef.current !== null &&
             thumbnailRef.current !== null &&
             descRef.current !== null &&
             videoName.current !== null &&
             deadLineDate.current !== null &&
-            noteToEditor.current !== null
+            (noteToEditor.current !== null || selectedType == 'edit') &&
+            (selectedType == 'raw' || deadLineTime.current !== null)
             // videoRef.current !== null
         ) {
 
@@ -38,29 +46,48 @@ export const UploadForm: React.FC<{ propData: (data: rawVideoInputType) => void,
                 descRef.current.value !== null &&
                 videoName.current.value !== null &&
                 deadLineDate.current.value !== null &&
-                noteToEditor.current.value !== null
+                (noteToEditor.current?.value !== null || selectedType == 'edit') &&
+                (selectedType == 'raw' || deadLineTime.current?.value !== null)
                 // videoRef.current.files?.length
             ) {
 
                 console.log(typeof deadLineDate.current.value);
-                const data: rawVideoInputType = {
-                    title: titleRef.current.value,
-                    thumbnail: thumbnailRef.current.value,
-                    description: descRef.current.value,
-                    videoKey: videoName.current.value,
-                    deadLineDate: deadLineDate.current.value,
-                    noteToEditor: noteToEditor.current.value,
-                    bucketName: `creator-${type}-${type === 'raw' ? 'videos' : 'video'}`,
-                    contentType: 'video/mp4'
-                };
-                propData(data);
+
+                if (selectedType == 'raw') {
+                    const data: rawVideoInputType = {
+                        title: titleRef.current.value,
+                        thumbnail: thumbnailRef.current.value,
+                        description: descRef.current.value,
+                        videoKey: videoName.current.value,
+                        deadLineDate: deadLineDate.current.value,
+                        noteToEditor: noteToEditor?.current?.value || '',
+                        bucketName: `creator-raw-videos`,
+                        contentType: 'video/mp4'
+                    };
+                    propData(data);
+                } else if (selectedType == 'edit') {
+                    const data: editVideoInputType = {
+                        title: titleRef.current.value,
+                        thumbnail: thumbnailRef.current.value,
+                        description: descRef.current.value,
+                        videoKey: videoName.current.value,
+                        deadLineDate: deadLineDate.current.value,
+                        deadLineTime: deadLineTime.current?.value || '12:00',
+                        bucketName: `creator-edit-video`,
+                        contentType: 'video/mp4'
+                    };
+                    propData(data);
+                }
+
                 // fileRef(videoRef /);
                 titleRef.current.value = '';
                 thumbnailRef.current.value = '';
                 descRef.current.value = '';
                 videoName.current.value = '';
                 deadLineDate.current.value = '';
-                noteToEditor.current.value = '';
+                if (noteToEditor.current) {
+                    noteToEditor.current.value = '';
+                }
             }
         }
 
@@ -126,20 +153,36 @@ export const UploadForm: React.FC<{ propData: (data: rawVideoInputType) => void,
                     />
                 </div>
 
-                <div className="mb-4">
-                    <label htmlFor="deadLineDate" className="block font-medium mb-1">
-                        DeadLine Date:
-                    </label>
-                    <input
-                        type="date"
-                        id="deadLineDate"
-                        name="deadLineDate"
-                        ref={deadLineDate}
-                        className="w-full p-2 border rounded"
-                    />
+                <div className="flex items-center justify-between">
+
+                    <div className="">
+                        <label htmlFor="deadLineDate" className="block font-medium mb-1">
+                            DeadLine Date:
+                        </label>
+                        <input
+                            type="date"
+                            id="deadLineDate"
+                            name="deadLineDate"
+                            ref={deadLineDate}
+                            className="w-full p-2 border rounded"
+                        />
+                    </div>
+                    {selectedType == 'edit' && <div className="">
+                        <label htmlFor="timeInput">When To Upload:</label>
+                        <input
+                            type="time"
+                            id="timeInput"
+                            name="timeInput"
+                            value="12:00"
+                            min="00:00"
+                            max="23:59"
+                            step="300"
+                            ref={deadLineTime}
+                        />
+                    </div>}
                 </div>
 
-                <div className="mb-4">
+                {selectedType === 'raw' && <div className="mb-4">
                     <label htmlFor="note" className="block font-medium mb-1">
                         Note For Editor:
                     </label>
@@ -152,10 +195,10 @@ export const UploadForm: React.FC<{ propData: (data: rawVideoInputType) => void,
                         required
                     />
 
-                </div>
+                </div>}
                 <div className="flex justify-between items-center">
 
-                    <div className="mb-4">
+                    <div className="">
                         <input
                             type="file"
                             accept="video/*"
@@ -174,6 +217,23 @@ export const UploadForm: React.FC<{ propData: (data: rawVideoInputType) => void,
                         </label>
 
                     </div>
+                    <div className="flex gap-x-3 items-center">
+                        <label htmlFor="type" className="block font-medium mb-1">
+                            Type:
+                        </label>
+                        <select
+                            id="type"
+                            name="type"
+                            ref={type}
+                            onChange={handleTypeChange}
+                            className="w-48 p-2 border rounded"
+                            required
+                            defaultValue={'raw'}
+                        >
+                            <option value="raw">Raw</option>
+                            <option value="edit">Edited</option>
+                        </select>
+                    </div>
 
                     <div className="">
                         <button
@@ -188,3 +248,5 @@ export const UploadForm: React.FC<{ propData: (data: rawVideoInputType) => void,
         </>
     )
 }
+
+
