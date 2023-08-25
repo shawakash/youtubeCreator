@@ -63,14 +63,6 @@ export const UpdateForm: React.FC<{
                     propData(data);
                 }
 
-                // fileRef(videoRef /);
-                titleRef.current.value = '';
-                thumbnailRef.current.value = '';
-                descRef.current.value = '';
-                deadLineDate.current.value = '';
-                if (noteToEditor.current) {
-                    noteToEditor.current.value = '';
-                }
             }
         }
 

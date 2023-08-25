@@ -1,8 +1,19 @@
 import Link from 'next/link';
 import React from 'react';
-import { RawVideoType } from 'zodTypes';
+import { EditVideoType, RawVideoType } from 'zodTypes';
 
-export const VideoCard: React.FC<{ video: RawVideoType, type: string, clientId: string, client: string, page: string }> = ({ video, type = 'raw', clientId, client, page = 'card' }) => {
+export const VideoCard: React.FC<{ 
+  video: RawVideoType | EditVideoType, 
+  type: string, 
+  clientId: string, 
+  client: string, 
+  onDelete?: () => void,
+  page?: string }> = ({ 
+    video, 
+    type = 'raw', 
+    clientId, 
+    client, 
+    page = 'card', onDelete }) => {
 
   const renderedComponent = () => {
     return (
@@ -20,7 +31,7 @@ export const VideoCard: React.FC<{ video: RawVideoType, type: string, clientId: 
             <h3 className="text-2xl font-semibold">{video.title}</h3>
             <div className="">
               <p className="text-lg font-medium">{client == 'creator' ? 'Video Description: ' : 'Note To Editor: '}</p>
-              <p className="text-gray-600 line-clamp-3">{client == 'creator' ? video.description : video.noteToEditor}</p>
+              <p className="text-gray-600 line-clamp-3">{(client == 'creator' && type == 'edit') ? video.description : video.noteToEditor}</p>
             </div>
 
             {/* Additional attributes can be displayed here */}
@@ -31,6 +42,7 @@ export const VideoCard: React.FC<{ video: RawVideoType, type: string, clientId: 
             {type === 'raw' && <p className={video.isUploaded ? `text-blue-500` : `text-red-500`}>Status: {video.isUploaded ? 'Uploaded' : video.isEdited ? 'Edited' : 'Not Edited'}</p>
             }
             {type === 'edit' && <p className={video.isUploaded ? `text-blue-500` : `text-red-500`}>Status: {video.isUploaded ? 'Uploaded' : 'Not Uploaded'}</p>}
+            {client === 'creator' && page === 'video' && <button onClick={onDelete} className="w-fit bg-blue-500 text-white py-2 px-4 rounded-2xl hover:bg-blue-600 hover:scale-105 active:scale-90 transition-all">Delete Video</button> }
           </div>
         </div>
       </>

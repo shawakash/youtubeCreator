@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             middle(req, res, async () => {
                 const { type } = req.headers;
-                const { credentialid, videokey, bucketname, _id } = req.body;
+                const { videokey, bucketname } = req.body;
                 
                 // Initialize AWS S3
                 const s3 = new aws.S3();
@@ -30,20 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     Key: videokey,
                 }).promise();
 
-                if(credentialid) {
-                    if(type === 'raw') {
-                        const rawCredentials = await RawVideo.findByIdAndDelete(credentialid);
-                        const creator = await Creator.findById(_id);
-                        creator.rawVideos = creator.rawVideos.filter((rv: string) => rv != credentialid);
-                        await creator.save();
-                        
-                    }if(type === 'edit') {
-                        const editCredentials = await EditedVideo.findByIdAndDelete(credentialid);
-                        const creator = await Creator.findById(_id);
-                        creator.editedVideos = creator.editedVideos.filter((rv: string) => rv != credentialid);
-                        await creator.save();
-                    }
-                }
+                
                 
                 res.status(200).json({ message: 'Video deleted successfully' });
             })
