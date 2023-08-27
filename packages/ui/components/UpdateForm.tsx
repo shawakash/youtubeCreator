@@ -70,7 +70,8 @@ export const UpdateForm: React.FC<{
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="bg-white w-[700px] p-6 shadow-md flex flex-col gap-y-2 rounded-md">
+            <form onSubmit={handleSubmit} className="bg-white hover:shadow-2xl transition-all duration-500 w-[700px] p-6 shadow-md flex flex-col gap-y-2 rounded-md">
+            <h1 className='font-semibold font-sans bg-gradient-to-tr text-transparent bg-clip-text from-purple-600 to-blue-300 text-[30px] my-2'>Update Credentials</h1>
 
 
                 <div className="mb-4">

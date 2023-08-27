@@ -5,6 +5,7 @@
   "types": "./src/index.ts",
   "license": "MIT",
   "dependencies": {
-    "recoil": "^0.7.7"
+    "recoil": "^0.7.7",
+    "zodTypes": "*"
   }
 }

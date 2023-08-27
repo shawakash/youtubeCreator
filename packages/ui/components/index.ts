@@ -7,3 +7,5 @@ export * from './Nav';
 export * from './LegerCard';
 export * from './UploadForm';
 export * from './UpdateForm';
+export * from './Title';
+export * from './EditorSelect';

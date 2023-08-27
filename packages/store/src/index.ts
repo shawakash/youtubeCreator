@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { EditorType } from 'zodTypes';
 
 
 export const creatorIdAtom = atom({
@@ -33,5 +34,10 @@ export const editorEditedVideos = atom({
 
 export const legersAtom = atom({
     key: 'legersAtom',
+    default: []
+});
+
+export const editorsRawVideoAtom = atom({
+    key: 'editorsRawVideoAtom',
     default: []
 });

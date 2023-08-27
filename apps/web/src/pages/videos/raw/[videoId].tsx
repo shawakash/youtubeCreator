@@ -1,30 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { UpdateForm, VideoCard } from 'ui';
+import { EditorSelect, UpdateForm, VideoCard } from 'ui';
 import { useSetRecoilState } from 'recoil';
 import { allRawVideo, legersAtom } from 'store';
 import { toast } from 'react-hot-toast';
-import { RawVideoType, UpdateVideoType, fetchVideoReqType, legerInType, rawVideo } from 'zodTypes';
+import { EditorType, RawVideoType, UpdateVideoType, fetchVideoReqType, legerInType, rawVideo } from 'zodTypes';
 import { GetServerSidePropsContext } from 'next/types';
 import axios from 'axios';
 import cookie from 'cookie';
 
 
-const VideoPage = ({  leger }) => {
+const VideoPage = ({ leger }) => {
   const [localVideo, setVideo] = useState<RawVideoType>();
+  const [editors, setEditors] = useState<EditorType[]>();
   const router = useRouter();
   const setAllRawVideos = useSetRecoilState(allRawVideo);
   const setLegers = useSetRecoilState(legersAtom);
   // const 
 
   useEffect(() => {
-      if(!leger) {
-        toast.error('Server Error');
-        router.back();
-      } if(leger) {
-        console.log(leger.rawVideo)
-        setVideo(leger.rawVideo);
-      }
+    if (!leger) {
+      toast.error('Server Error');
+      router.back();
+    } if (leger) {
+      console.log(leger.rawVideo)
+      setVideo(leger.rawVideo);
+      setEditors(leger.editors);
+    }
   }, []);
 
   const handleUpdate = (data: UpdateVideoType) => {
@@ -44,7 +46,7 @@ const VideoPage = ({  leger }) => {
 
       setAllRawVideos(pre => {
         let prev = pre.find(c => c.videoKey == localVideo.videoKey);
-        prev = {...prev, ...data};
+        prev = { ...prev, ...data };
         return pre;
       });
 
@@ -71,7 +73,7 @@ const VideoPage = ({  leger }) => {
 
     });
   }
-  
+
 
   const removeFromLeger = () => {
     axios({
@@ -87,7 +89,7 @@ const VideoPage = ({  leger }) => {
       }
     }).then(response => {
 
-      setAllRawVideos(rvs =>  rvs.filter(rv => rv._id != localVideo._id));
+      setAllRawVideos(rvs => rvs.filter(rv => rv._id != localVideo._id));
       setLegers(lgs => lgs.filter(lg => lg.rawVideo._id != localVideo._id));
       toast.success(response.data.message);
       router.push('/videos/raw')
@@ -111,18 +113,63 @@ const VideoPage = ({  leger }) => {
     })
   }
 
+  const handleSelect = (value: string) => {
+
+    const answer = prompt(`Type ${value.slice(value.length - 6)} to continue!`);
+    if (answer == value.slice(value.length - 6)) {
+      console.log(localVideo._id)
+      axios({
+        baseURL: 'http://localhost:3000/api',
+        url: '/video/addEditor',
+        method: 'PUT',
+        headers: {
+          'Authorization': sessionStorage.getItem('creatorToken'),
+          'Content-Type': 'application/json'
+        },
+        data: {
+          videoKey: localVideo._id,
+          editor: value
+        }
+      }).then(response => {
+        
+        toast.success('Editor Added Successfully');
+
+      }).catch(err => {
+
+        if (err) {
+          if (err.response && (err.response.status == 403)) {
+            toast.error(err.response.data.message);
+            sessionStorage.clear()
+            router.push('/login');
+          } 
+        } else if (err.response) {
+          toast.error(err.response.data.message);
+        }
+        console.error(err);
+
+      });
+    }
+  }
+
   return (
     <>
-    <div className="h-screen bg-gray-100 flex justify-around items-center">
-      {leger && localVideo && <VideoCard video={localVideo} type='raw' clientId={leger.creator._id} client='creator' onDelete={removeFromLeger} page='video' />}
-      {localVideo && <UpdateForm video={localVideo} type='raw' propData={handleUpdate} />  }
-    </div>
+
+      <div className="h-full  bg-gray-100 flex justify-around py-6">
+        {leger && localVideo && <VideoCard video={localVideo} type='raw' clientId={leger.creator._id} client='creator' onDelete={removeFromLeger} page='video' />}
+        <div className="flex flex-col gap-y-8">
+
+          {localVideo && <UpdateForm video={localVideo} type='raw' propData={handleUpdate} />}
+          {editors && <EditorSelect editors={editors} onSelect={handleSelect} />}
+
+        </div>
+      </div>
+
     </>
   )
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const {videoId} = context.params;
+  const { videoId } = context.params;
   const { BASEURL } = process.env;
 
   const cookies = context.req.headers.cookie;
@@ -146,7 +193,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     });
 
-    
+
     return {
       props: {
         leger: response.data.video
@@ -155,14 +202,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   } catch (error) {
     console.error(error)
-    return { 
+    return {
       props: {
         leger: null
       }
-    }    
+    }
   }
 
-  
+
 }
 
 export default VideoPage;

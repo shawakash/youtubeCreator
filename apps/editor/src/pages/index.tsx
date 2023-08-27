@@ -16,7 +16,7 @@ export default function Home() {
       <p className="text-lg text-white mb-8">
         Stream your favorite videos to Youtube anytime, anywhere.
       </p>
-      <Link href="/dashboard">
+      <Link href="/video/raw">
         <p className="bg-white text-blue-500 px-6 py-3 rounded-full shadow-md hover:bg-blue-600 hover:text-white transition duration-300">
           Get Started
         </p>
