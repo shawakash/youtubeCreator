@@ -20,7 +20,6 @@ export const UpdateForm: React.FC<{
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        console.log('hello')
         if (
             titleRef.current !== null &&
             thumbnailRef.current !== null &&
@@ -41,7 +40,6 @@ export const UpdateForm: React.FC<{
                 // videoRef.current.files?.length
             ) {
 
-                console.log(typeof deadLineDate.current.value);
 
                 if (type == 'raw') {
                     const data: UpdateVideoType = {

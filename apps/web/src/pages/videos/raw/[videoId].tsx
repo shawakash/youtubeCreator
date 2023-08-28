@@ -23,7 +23,6 @@ const VideoPage = ({ leger }) => {
       toast.error('Server Error');
       router.back();
     } if (leger) {
-      console.log(leger.rawVideo)
       setVideo(leger.rawVideo);
       setEditors(leger.editors);
     }
@@ -117,7 +116,6 @@ const VideoPage = ({ leger }) => {
 
     const answer = prompt(`Type ${value.slice(value.length - 6)} to continue!`);
     if (answer == value.slice(value.length - 6)) {
-      console.log(localVideo._id)
       axios({
         baseURL: 'http://localhost:3000/api',
         url: '/video/addEditor',
@@ -127,11 +125,28 @@ const VideoPage = ({ leger }) => {
           'Content-Type': 'application/json'
         },
         data: {
-          videoKey: localVideo._id,
+          videoId: localVideo._id,
           editor: value
         }
       }).then(response => {
-        
+        setAllRawVideos(rvs => {
+          const rv = rvs.find(r => r._id == localVideo._id);
+          rv['editor'] = response.data.editor;
+          return rvs;
+        });
+
+        setLegers(ls => {
+          const l = ls.find(de => de.rawVideo._id == localVideo._id);
+          l['editor'] = response.data.editor;
+          l.rawVideo['editor'] = response.data.editor;
+          return ls;
+        });
+
+        setVideo(vid => {
+          vid.editor = response.data.editor;
+          return vid;
+        });
+
         toast.success('Editor Added Successfully');
 
       }).catch(err => {
@@ -159,7 +174,7 @@ const VideoPage = ({ leger }) => {
         <div className="flex flex-col gap-y-8">
 
           {localVideo && <UpdateForm video={localVideo} type='raw' propData={handleUpdate} />}
-          {editors && <EditorSelect editors={editors} onSelect={handleSelect} />}
+          {!localVideo?.editor && editors && <EditorSelect editors={editors} onSelect={handleSelect} />}
 
         </div>
       </div>

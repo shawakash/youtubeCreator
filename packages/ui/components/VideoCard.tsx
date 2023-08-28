@@ -54,7 +54,6 @@ export const VideoCard: React.FC<{
       </>
     );
   }
-
   return (
     <>
     {page === 'card' ? (

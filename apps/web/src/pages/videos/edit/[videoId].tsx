@@ -20,7 +20,6 @@ const VideoPage = ({  leger }) => {
         toast.error('Server Error');
         router.back();
       } if(leger) {
-        console.log(leger)
         setVideo(leger);
       }
   }, []);

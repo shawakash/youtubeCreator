@@ -21,7 +21,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 { path: 'creator' }, 
                 { path: 'editors' }, 
                 { path: 'rawVideo' }]);
-                console.log(isLeger)
             if(!isLeger) {
                const newLeger = new Leger(parsedInput.data);
                newLeger.editors.push(_id);

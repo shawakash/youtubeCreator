@@ -22,18 +22,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
             const leger = await Leger.findOne({ rawVideo: videoId });
             const video = await RawVideo.findById(videoId);
-            edit.rawVideos.push(videoId);
-            if(!creator.editor.find(ed => ed._id == edit._id)) {
+
+            if(!video) {
+                return res.status(404).json({ message: 'No such Video' });
+            }
+
+            if(video.editor) {
+                return res.status(400).json({ message: 'Already Has an editor' });
+            }
+
+            if(leger) {
+                leger.editor = edit._id;
+            }
+
+            video.editor = edit._id;
+
+            if(!(edit.rawVideos.find(rv => rv == videoId))) {
+                edit.rawVideos.push(videoId);
+            }
+
+            if(!(creator.editor.find(ed => ed == edit._id))) {
                 creator.editor.push(edit._id)
             }
             await creator.save();
             await edit.save();
-            console.log(creator);
-            console.log('Leger', leger);
-            console.log('Video', video);
-            // if (!leger || !video) {
-            //     return res.status(404).json({ message: 'Invalid Ids' });
-            // }
+            await leger.save();
+            await video.save();
+            
             return res.status(200).json({ message: 'Assigned As A editor', editor: edit });
         });
 

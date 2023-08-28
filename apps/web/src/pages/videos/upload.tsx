@@ -25,7 +25,6 @@ const VideoUploader = () => {
 
 
     let selectedVideo = video.current;
-    // console.log(selectedVideo); 
 
 
 

@@ -20,7 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const { _id } = req.headers;
 
             const creator = await Creator.findById(_id).select(['username', 'email', 'name', '_id', 'rawVideos']);
-            console.log(creator)
             const raw = new RawVideo({...parsedInput.data, creator: _id});
             await raw.save();
             creator.rawVideos.push(raw._id);

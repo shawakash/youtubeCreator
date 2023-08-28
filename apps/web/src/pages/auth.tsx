@@ -8,7 +8,6 @@ import protection from '../../utils/protection';
 const auth = () => {
     const router = useRouter();
     const { BASEURL } = process.env;
-    console.log(Cookies.get('creatorToken'))
     const handleAuth = () => {
         axios({
             baseURL: BASEURL || 'http://localhost:3000/api',

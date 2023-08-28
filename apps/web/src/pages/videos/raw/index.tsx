@@ -14,7 +14,6 @@ const index: React.FC<{ videos: RawVideoType[] }> = ({ videos }) => {
 
   useEffect(() => {
     if(videos) {
-      console.log(videos)
       setRawVideos(videos);
     }
   }, []);

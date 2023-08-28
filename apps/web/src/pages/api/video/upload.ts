@@ -6,26 +6,44 @@ import fs from 'fs';
 
 const { BASEURL } = process.env;
 
+
+
+
+async function main(oauth2Client, refresh_Token) {
+
+    oauth2Client.setCredentials({
+        'refresh_token': refresh_Token
+    })
+    const token = await oauth2Client.getAccessToken();
+    console.log('from here')
+    console.log(token);
+    return token.token;
+}
+
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         return res.status(400).json({ message: 'Its  POST request' });
     }
     try {
 
-        const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI  } = process.env;
-        if (!CLIENT_ID || CLIENT_ID.length == 0 || 
-            !REDIRECT_URI|| REDIRECT_URI.length == 0 ||
-            !CLIENT_SECRET|| CLIENT_SECRET.length == 0) {
+        const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = process.env;
+        if (!CLIENT_ID || CLIENT_ID.length == 0 ||
+            !REDIRECT_URI || REDIRECT_URI.length == 0 ||
+            !CLIENT_SECRET || CLIENT_SECRET.length == 0) {
             throw new Error('Please define the CREATOR_SECRET, CLIENT_SECRET, REDIRECT_URI environment variable');
         }
 
-        console.log(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+        
 
         tokenValidator(req, res, async () => {
 
             const { accessToken, refreshToken } = req.headers; // Get the tokens from the request body
             const video = req.body;
             console.log(video);
+
+
+
             console.log(refreshToken)
             const oauth2Client = new google.auth.OAuth2(
                 CLIENT_ID,
@@ -35,9 +53,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             oauth2Client.setCredentials({
                 access_token: accessToken as string,
                 refresh_token: refreshToken as string,
-                
+
             });
-            
+            // const generatedToken = main(oauth2Client, refreshToken);
 
             const youtube = google.youtube('v3');
 
@@ -67,7 +85,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (response.status == 200) {
 
                     const videoFilePath = response.data.signedUrl; // Path to the video file on your server
-                    console.log(videoFilePath)
                     const response2 = await youtube.videos.insert({
                         auth: oauth2Client,
                         part: ['snippet,status'],

@@ -24,7 +24,6 @@ const login = () => {
                 'Content-Type': 'application/json'
             }
         }).then(response => {
-            console.log(response.data.token);
             sessionStorage.setItem('editorToken', response.data.token)
             setEditorId(response.data._id);
             toast.success(response.data.message);

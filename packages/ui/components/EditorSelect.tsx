@@ -30,8 +30,8 @@ export const EditorSelect: React.FC<{ editors: Partial<EditorType[]>, onSelect: 
                     {editors.length > 0 ? 'Select Editor For this Video:' : 'Video Not Added By any Editor to its leger :('}
                 </option>
                 {editors.map((option) => (
-                    <option key={option?._id} value={option?._id}>
-                        {option?.name} - {option?.username}
+                    option?.name && <option key={option?._id} value={option?._id}>
+                        {option?.name?.charAt(0).toUpperCase() + option?.name?.slice(1)} - @{option?.username}
                     </option>
                 ))}
             </select>

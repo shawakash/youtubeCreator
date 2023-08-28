@@ -1,4 +1,4 @@
-import { EditedVideo, RawVideo, dbConnect } from "db";
+import { Creator, EditedVideo, Editor, Leger, RawVideo, dbConnect } from "db";
 import { NextApiRequest, NextApiResponse } from "next";
 import middle from "../auth/middle";
 import { EditVideoType, RawVideoType } from "zodTypes";
@@ -22,7 +22,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             } else if(type === 'edit') {
                 video = await EditedVideo.findOneAndDelete({ videoKey: videokey });
             }
-            console.log(video)
+
+            let leger = await Leger.findOneAndDelete({ rawVideo: video._id });
+            let creator = await Creator.findById(_id);
+            creator.rawVideos = creator.rawVideos.filter(rv => rv != video._id);
+            creator.editedVideos = creator.editedVideos.filter(ev => ev != video._id);
+            await creator.save();
+
+            if(video.editor) {
+                let editor = await Editor.findById(video.editor);
+                editor.rawVideos = editor.rawVideos.filter(rv => rv != video._id);
+                editor.editedVideos = editor.editedVideos.filter(rv => rv != video._id);
+                await editor.save();
+            }
+
             const response = await axios({
                 baseURL: BASEURL,
                 url: '/video/deleteVideo',

@@ -25,8 +25,6 @@ const login = () => {
                 'Content-Type': 'application/json'
             }
         }).then(response => {
-            console.log(response.data.token);
-            Cookies.set('creatorToken', response.data.token);
             sessionStorage.setItem('creatorToken', response.data.token)
             setCreatorId(response.data._id);
             toast.success(response.data.message);

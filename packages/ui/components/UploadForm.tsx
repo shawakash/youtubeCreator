@@ -28,7 +28,6 @@ export const UploadForm: React.FC<{ propData: (data: rawVideoInputType | editVid
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        console.log('hello')
         if (
             titleRef.current !== null &&
             thumbnailRef.current !== null &&
@@ -51,7 +50,6 @@ export const UploadForm: React.FC<{ propData: (data: rawVideoInputType | editVid
                 // videoRef.current.files?.length
             ) {
 
-                console.log(typeof deadLineDate.current.value);
 
                 if (selectedType == 'raw') {
                     const data: rawVideoInputType = {

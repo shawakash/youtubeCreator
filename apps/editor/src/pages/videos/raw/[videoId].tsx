@@ -30,8 +30,6 @@ const VideoPage = ({ video, hasApplied }) => {
   }, []);
 
   const handleLeger = () => {
-    console.log(typeof localVideo._id)
-    console.log(typeof localVideo.creator._id)
     const data: legerInType = {
       rawVideo: localVideo._id,
       creator: localVideo.creator._id
