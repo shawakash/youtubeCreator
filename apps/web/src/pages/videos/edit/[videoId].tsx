@@ -8,6 +8,7 @@ import { EditVideoType, UpdateVideoType, fetchVideoReqType, } from 'zodTypes';
 import { GetServerSidePropsContext } from 'next/types';
 import axios from 'axios';
 import cookie from 'cookie';
+import protection from '../../../../utils/protection';
 
 
 const VideoPage = ({  leger }) => {
@@ -111,6 +112,7 @@ const VideoPage = ({  leger }) => {
     <>
     <div className="h-screen bg-gray-100 flex justify-around items-center">
       {localVideo && <VideoCard video={localVideo} type='edit' clientId={localVideo.creator._id} client='creator' onDelete={removeFromLeger} page='video' />}
+      {/* @ts-ignore */}
       {localVideo && <UpdateForm video={localVideo} type='edit' propData={handleUpdate} />  }
     </div>
     </>
@@ -161,4 +163,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   
 }
 
-export default VideoPage;
+export default protection(VideoPage);

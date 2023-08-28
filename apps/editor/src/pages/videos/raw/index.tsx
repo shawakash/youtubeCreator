@@ -22,6 +22,7 @@ const index: React.FC<{ videos: RawVideoType[] }> = ({ videos }) => {
   return (
     <>
       <div className="flex flex-wrap p-10 gap-8 justify-center items-center h-screen bg-gray-100">
+        {/* @ts-ignore */}
         {rawVideos.length > 0 && rawVideos.map(rv => <VideoCard clientId={editorId}  key={rv._id} video={rv} type='raw' />)}
       </div>
     </>

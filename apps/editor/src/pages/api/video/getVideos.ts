@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         middle(req, res, async () => {
             const { _id, type } = req.headers;
             if(type === 'raw') {
-                const videos1 = await RawVideo.find().populate('creator').populate('editor');
+                const videos1 = await RawVideo.find({ editor: null }).populate('creator').populate('editor');
                 
                 try {
                     const response = await axios({

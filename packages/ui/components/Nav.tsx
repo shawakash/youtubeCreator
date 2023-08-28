@@ -29,6 +29,7 @@ export const Nav: React.FC<{client: string, id: string}> = ({ client, id }) => {
                                 {client == 'creator' && <Link href={`/auth`}><li className="hover:text-blue-500 cursor-pointer transition-all hover:scale-125 active:scale-95">Auth</li></Link>}
                                 {state && <Link href={`/videos/raw`}><li className="hover:text-blue-500 cursor-pointer transition-all hover:scale-125 active:scale-95">Raw</li></Link>}
                                 {state && <Link href={`/videos/edit`}><li className="hover:text-blue-500 cursor-pointer transition-all hover:scale-125 active:scale-95">Edited</li></Link>}
+                                {client != 'creator' && state && <Link href={`/videos/leger`}><li className="hover:text-blue-500 cursor-pointer transition-all hover:scale-125 active:scale-95">Leger</li></Link>}
                                 {state && <Link href={`/videos/upload`}><li className="hover:text-blue-500 cursor-pointer transition-all hover:scale-125 active:scale-95">Upload</li></Link>}
                                 {!state && <Link href={`/login`}><li className="hover:text-blue-500 cursor-pointer transition-all hover:scale-125 active:scale-95">Login</li></Link>}
                                 {!state && <Link href={`/signup`}><li className="hover:text-blue-500 cursor-pointer transition-all hover:scale-125 active:scale-95">Register</li></Link>}

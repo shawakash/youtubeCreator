@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Video } from 'ui';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { allRawVideoEditor, legersAtom } from 'store';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { allRawVideoEditor, editorIdAtom, legersAtom } from 'store';
 import { toast } from 'react-hot-toast';
-import { RawVideoType, fetchVideoReqType, legerInType } from 'zodTypes';
+import { RawVideoType, RemoveFromLegerType, fetchVideoReqType, legerInType } from 'zodTypes';
 import { GetServerSidePropsContext } from 'next/types';
 import axios from 'axios';
 import cookie from 'cookie';
+import protection from '../../../../utils/protection';
 
 
 const VideoPage = ({ video, hasApplied }) => {
   const [localVideo, setVideo] = useState<RawVideoType>();
+  const [applied, setApplied] = useState<boolean>();
   const router = useRouter();
   const { videoId } = router.query;
   const setLegers = useSetRecoilState(legersAtom);
-  // const [rawVideos, setRawVideos] = useRecoilState<RawVideoType[]>(allRawVideoEditor);
+  const editorId = useRecoilValue(editorIdAtom);
 
   useEffect(() => {
     if(videoId) {
@@ -25,6 +27,7 @@ const VideoPage = ({ video, hasApplied }) => {
         router.back();
       } if(video) {
         setVideo(video);
+        setApplied(hasApplied);
       }
     }
   }, []);
@@ -45,13 +48,14 @@ const VideoPage = ({ video, hasApplied }) => {
       data: data
     }).then(response => {
       setLegers(legers => [...legers, response.data.leger]);
+      setApplied(true);
       toast.success(response.data.message);
-      router.push('/videos/leger');
+      // router.push('/videos/leger');
     }).catch(err => {
       if(err) {
         if(err.response) {
           toast.error(err.response.data.message);
-          router.push('/videos/leger');
+          // router.push('/videos/leger');
           return;
         }
           toast.error(err.message);
@@ -61,14 +65,53 @@ const VideoPage = ({ video, hasApplied }) => {
   }
 
   const removeFromLeger = () => {
-    
+
+    const data: RemoveFromLegerType = {videoId: localVideo._id};
+
+    axios({
+      baseURL: 'http://localhost:3000/api',
+      url: '/video/removeFromLeger',
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'appliacation/json',
+        'Authorization': sessionStorage.getItem('editorToken')
+      },
+      data: data
+    }).then(response => {
+
+      setLegers(lgs => {
+        return lgs.map(lg => {
+          if (lg.rawVideo._id === localVideo._id) {
+              return {
+                  ...lg,
+                  editors: lg.editors.filter(ed => ed._id !== editorId)
+              };
+          }
+          return lg 
+        });
+      });
+
+      setApplied(false);
+      toast.success(response.data.message);
+
+    }).catch(err => {
+      if (err) {
+        if (err.response) {
+            toast.error(err.response.data.message);
+            return;
+        }
+        toast.error(err.message);
+        console.log(err)
+        return;
+    }
+    })
   }
 
   return (
     <>
     <div className="h-screen bg-gray-100 flex justify-around items-center">
 
-      {localVideo && <Video removeFromLeger={removeFromLeger} video={localVideo} hasApplied={hasApplied}  type={'raw'} addToLeger={handleLeger} />}
+      {localVideo && <Video removeFromLeger={removeFromLeger} video={localVideo} hasApplied={applied}  type={'raw'} addToLeger={handleLeger} />}
     </div>
     </>
   )
@@ -118,4 +161,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   
 }
 
-export default VideoPage;
+export default protection(VideoPage);

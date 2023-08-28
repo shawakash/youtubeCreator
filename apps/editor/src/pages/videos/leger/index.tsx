@@ -6,15 +6,18 @@ import { legerType } from 'zodTypes';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { editorIdAtom, legersAtom } from 'store';
 import { LegerCard } from 'ui';
+import protection from '../../../../utils/protection';
 
 const index: React.FC<{ legers: legerType[] }> = ({ legers }) => {
 
   const [localLegers, setLegers] = useRecoilState(legersAtom);
   const editorId = useRecoilValue(editorIdAtom);
+  const setAllLegers = useSetRecoilState(legersAtom);
 
   useEffect(() => {
     if(localLegers.length === 0) {
       setLegers(legers);
+      setAllLegers(legers)
     }
   }, []);
 
@@ -68,4 +71,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 }
 
-export default index;
+export default protection(index);

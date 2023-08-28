@@ -120,3 +120,9 @@ export interface legerType {
 }
 
 export type UpdateVideoType = Partial<Omit<RawVideoType & EditVideoType, 'videoKey' | 'bucketName' | '_id' >>
+
+export const removeFromLegerType = z.object({
+  videoId: z.string()
+});
+
+export type RemoveFromLegerType = z.infer<typeof removeFromLegerType>;

@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         middle(req, res, async () => {
 
             const { _id } = req.headers;
-            const legers = await Leger.find({ editors: { $in: [_id] } }).populate([{ path: 'creator', select: ['username', 'name', 'email' ] }, { path: 'editor' }, { path: 'rawVideo' }]).exec();
+            const legers = await Leger.find({ editors: { $in: [_id] } }).populate([{ path: 'creator', select: ['username', 'name', 'email' ] }, { path: 'editor', select: ['username', 'name', 'email', '_id'] }, { path: 'rawVideo' }]).exec();
             
             if(!legers) {
                 return res.status(200).json({ message: 'Start Taking Project', legers: [] });

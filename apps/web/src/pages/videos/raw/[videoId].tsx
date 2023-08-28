@@ -8,6 +8,7 @@ import { EditorType, RawVideoType, UpdateVideoType, fetchVideoReqType, legerInTy
 import { GetServerSidePropsContext } from 'next/types';
 import axios from 'axios';
 import cookie from 'cookie';
+import protection from '../../../../utils/protection';
 
 
 const VideoPage = ({ leger }) => {
@@ -227,4 +228,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 }
 
-export default VideoPage;
+export default protection(VideoPage);
