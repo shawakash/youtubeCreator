@@ -18,6 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // return res.status(400).json({ message: 'No client id and redirect uri was provided' })
         }
             const { state } = req.query;
+            console.log(req.query)
             const clientId = CLIENT_ID;
             const clientSecret = CLIENT_SECRET;
             const redirectUri = REDIRECT_URI; // Should match the authorized redirect URI in your client settings
@@ -32,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 redirect_uri: redirectUri,
                 grant_type: 'authorization_code',
             };
-
+            console.log(authorizationCode)
             try {
                 const response = await axios.post(tokenUrl, new URLSearchParams(data));
                 const accessToken = response.data.access_token;
@@ -43,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // if(!accessToken || !refreshToken) {
                 //     return res.status(400).json({ message: 'Please Try Again' });
                 // }
-                console.log(response);
+                console.log(state);
                 const creator = await Creator.findById(state);
                 
                 creator.refreshToken = refreshToken;
@@ -51,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 creator.hasAllowed = true;
                 await creator.save();
 
-                res.redirect('/videos/raw/upload');
+                res.redirect('/');
                 return res.status(200).json({message: 'Authentication successful! You can close this window.', accessToken, refreshToken});
             } catch (error) {
                 console.error('Error exchanging authorization code for tokens:', error);
