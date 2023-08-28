@@ -38,13 +38,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         
 
-        middle(req, res, async () => {
+        tokenValidator(req, res, async () => {
 
-            const { _id } = req.headers; // Get the tokens from the request body
-
-            const creator = await Creator.findById(_id);
-            const accessToken = creator.accessToken;
-            const refreshToken = creator.refreshToken
+            const { accessToken, refreshToken } = req.headers; // Get the tokens from the request body
 
             console.log(accessToken)
 
