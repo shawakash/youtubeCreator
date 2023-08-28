@@ -41,3 +41,8 @@ export const editorsRawVideoAtom = atom({
     key: 'editorsRawVideoAtom',
     default: []
 });
+
+export const assignedVideosAtom = atom({
+    key: 'assignedVideosAtom',
+    default: []
+})

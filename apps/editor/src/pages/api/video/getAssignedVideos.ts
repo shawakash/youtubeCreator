@@ -1,31 +1,32 @@
 import { Leger, dbConnect } from "db";
 import { NextApiRequest, NextApiResponse } from "next";
-import middle from "../middle";
 import axios from "axios";
-import { legerType } from "zodTypes";
+import middle from "../middle";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method != 'GET') {
         return res.status(400).json({ message: 'Its a Get Request' });
     }
     try {
-        await dbConnect();
-
         const { BASEURL } = process.env;
-
+        await dbConnect();
         middle(req, res, async () => {
-
             const { _id } = req.headers;
-            const legers = await Leger.find({ editors: { $in: [_id] } }).populate([
-                { path: 'creator', select: ['username', 'name', 'email'] },
-                { path: 'editor', select: ['username', 'name', 'email', '_id'] },
-                { path: 'rawVideo' }]).exec();
 
-            if (!legers) {
-                return res.status(200).json({ message: 'Start Taking Project', legers: [] });
+            const assignedVideos = await Leger.find({ editor: _id }).populate(
+                {
+                    path: 'rawVideo', populate: [
+                        { path: 'creator', select: ['username', 'name', 'email', '_id'] },
+                        { path: 'editor', select: ['username', 'name', 'email', '_id'] }
+                    ]
+                }
+            );
+
+            if (!assignedVideos) {
+                return res.status(201).json({ message: 'No Videos Assigned', video: [] });
             }
 
-            for (let i of legers) {
+            for (let i of assignedVideos) {
                 try {
                     const response = await axios({
                         baseURL: BASEURL,
@@ -49,11 +50,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
 
 
+            return res.status(200).json({ message: 'Yeah', video: assignedVideos });
 
-            return res.status(200).json({ message: 'Got', legers });
+        })
 
-        });
     } catch (error) {
-        return res.status(500).json({ message: 'Internal Server Error', err: error });
+        console.log(error.message);
+        return res.status(500).json({ message: 'Internal Error', err: error });
     }
 }

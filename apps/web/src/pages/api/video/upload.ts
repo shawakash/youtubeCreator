@@ -90,7 +90,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         part: ['snippet,status'],
                         requestBody: videoDetails,
                         media: {
-                            mimeType: 'video/mp4', // Change this according to your video's MIME type
+                            mimeType: 'video/*', // Change this according to your video's MIME type
                             body: (await axios.get(videoFilePath, { responseType: 'stream' })).data,
                         },
                     });

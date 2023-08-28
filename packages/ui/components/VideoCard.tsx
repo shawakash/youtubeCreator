@@ -44,10 +44,10 @@ export const VideoCard: React.FC<{
             {<p className={`text-${video.editor != null ? 'blue' : 'red'}-500`} >Editor: {clientId == video.editor?._id && video.editor ? 'You' : (video.editor?.name)?.charAt(0).toUpperCase() + video.editor?.name?.slice(1) || 'None'}</p>}
 
             {/* Display other attributes as needed */}
-            {type === 'raw' && <p className={video.isUploaded ? `text-blue-500` : `text-red-500`}>Status: {video.isUploaded ? 'Uploaded' : video.isEdited ? 'Edited' : 'Not Edited'}</p>
+            {(type === 'raw' || type === 'assigned') && <p className={video.isUploaded ? `text-blue-500` : `text-red-500`}>Status: {video.isUploaded ? 'Uploaded' : video.isEdited ? 'Edited' : 'Not Edited'}</p>
             }
             {<p className='text-gray-600'>DeadLine:  <span className="text-red-500">{video.deadLineDate}</span></p>}
-            {type === 'edit' && <p className={video.isUploaded ? `text-blue-500` : `text-red-500`}>Status: {video.isUploaded ? 'Uploaded' : 'Not Uploaded'}</p>}
+            {(type === 'edit' || type === 'assigned')&& <p className={video.isUploaded ? `text-blue-500` : `text-red-500`}>Status: {video.isUploaded ? 'Uploaded' : 'Not Uploaded'}</p>}
             {client === 'creator' && page === 'video' && <button onClick={onDelete} className="w-fit bg-blue-500 text-white py-2 px-4 rounded-2xl mt-1 hover:bg-blue-600 hover:scale-105 active:scale-90 transition-all">Delete Video</button> }
           </div>
         </div>
