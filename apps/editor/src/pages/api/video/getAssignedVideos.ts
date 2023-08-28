@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     console.log(error);
                 }
             }
-
+            console.log(assignedVideos)
 
             return res.status(200).json({ message: 'Yeah', video: assignedVideos });
 

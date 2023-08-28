@@ -17,12 +17,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if(!parsedInput.success) {
                 return res.status(400).json({ message: 'Validation Error', err: parsedInput })
             }
+            console.log(parsedInput)
+            console.log('from here')
             const { _id } = req.headers;
             const { videoKey } = parsedInput.data;
 
             const editor = await Editor.findById(_id).select(['username', 'email', 'name', '_id', 'editedVideos']);
             const rawVideo = await RawVideo.findOne({ videoKey });
-
+            console.log(videoKey);
+            console.log(rawVideo)
             if(!rawVideo) {
                 return res.status(404).json({ message: 'Video Not found' });
             }
@@ -32,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(403).json({ message: 'Unauthorized Video Upload Attempt' })
             }
 
-            const creator = await Creator.findById(rawVideo.creator._id).select(['username', 'name', '_id', 'email']);
+            const creator = await Creator.findById(rawVideo.creator._id).select(['username', 'name', '_id', 'email', 'editedVideos']);
             const intialVideo = new EditedVideo({...parsedInput.data, editor: _id, creator: creator._id});
             const video = (await intialVideo.save()).populate([
                 { path: 'creator', select: ['username', 'name', 'email', '_id'] },

@@ -19,10 +19,11 @@ export default async function handler(req, res) {
     try {
 
         await dbConnect();
-
         middle(req, res, async () => {
             
             const { key, bucketname, expiresin } = req.headers; // The object key for the video in S3
+
+
             aws.config.update({
                 accessKeyId: AWS_ACCESS_KEY,
                 secretAccessKey: AWS_SECRET_KEY,
