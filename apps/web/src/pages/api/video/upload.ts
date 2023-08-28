@@ -3,6 +3,8 @@ import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 import tokenValidator from '../auth/tokenValidator';
 import fs from 'fs';
+import middle from '../auth/middle';
+import { Creator } from 'db';
 
 const { BASEURL } = process.env;
 
@@ -36,9 +38,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         
 
-        tokenValidator(req, res, async () => {
+        middle(req, res, async () => {
 
-            const { accessToken, refreshToken } = req.headers; // Get the tokens from the request body
+            const { _id } = req.headers; // Get the tokens from the request body
+
+            const creator = await Creator.findById(_id);
+            const accessToken = creator.accessToken;
+            const refreshToken = creator.refreshToken
+
+            console.log(accessToken)
+
             const video = req.body;
             console.log(video);
 
