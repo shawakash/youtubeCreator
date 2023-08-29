@@ -28,34 +28,34 @@ const editorSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const rawVideoSchema = new mongoose.Schema({
-    thumbnail: {type: String, required: true, },
+    thumbnail: { type: String, required: true, },
     title: { type: String, required: true },
-    description: {type: String, required: true}, // Html kind page
+    description: { type: String, required: true }, // Html kind page
     videoKey: { type: String, required: true },
     bucketName: { type: String, required: true },
-    contentType: {type: String, required: true},
-    deadLineDate: {type: String, required: true},
+    contentType: { type: String, required: true },
+    deadLineDate: { type: String, required: true },
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'Creator' },
     editor: { type: mongoose.Schema.Types.ObjectId, ref: 'Editor' },
     isEdited: { type: Boolean, default: false },
     isUploaded: { type: Boolean, default: false },
     noteToEditor: { type: String, required: true },
-    url: {type: String}
+    url: { type: String }
 }, { timestamps: true });
 
 const editedVideosSchema = new mongoose.Schema({
-    thumbnail: {type: String, required: true, },
+    thumbnail: { type: String, required: true, },
     title: { type: String, required: true },
-    description: {type: String, required: true}, // Html kind page
+    description: { type: String, required: true }, // Html kind page
     videoKey: { type: String, required: true },
     bucketName: { type: String, required: true },
-    contentType: {type: String, required: true},
-    deadLineDate: {type: String, required: true},
-    deadLineTime: {type: String, required: true},
+    contentType: { type: String, required: true },
+    deadLineDate: { type: String, required: true },
+    deadLineTime: { type: String, required: true },
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'Creator' },
     editor: { type: mongoose.Schema.Types.ObjectId, ref: 'Editor' },
     isUploaded: { type: Boolean, default: false },
-    url: {type: String}
+    url: { type: String }
 }, { timestamps: true });
 
 const legerSchema = new mongoose.Schema({
@@ -63,6 +63,21 @@ const legerSchema = new mongoose.Schema({
     editors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Editor' }],
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'Creator', required: true },
     editor: { type: mongoose.Schema.Types.ObjectId, ref: 'Editor' }
+}, { timestamps: true });
+
+const uploadVideoSchema = new mongoose.Schema({
+
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    privacy: { type: String, required: true },
+    publishAt: { type: String, required: true },
+    category: { type: String, required: true },
+    videoKey: { type: String, required: true },
+    bucketName: { type: String, required: true },
+    thumbnail: { type: String, required: true },
+    tags: { type: [String] },
+    uploadId: { type: String, required: true }
+
 }, { timestamps: true });
 
 const getModel = (modelName: any, schema: any) => {
@@ -79,6 +94,7 @@ export const Editor = getModel('Editor', editorSchema);
 export const RawVideo = getModel('RawVideo', rawVideoSchema);
 export const EditedVideo = getModel('EditedVideo', editedVideosSchema);
 export const Leger = getModel('Leger', legerSchema);
+export const UploadVideo = getModel('UploadVideo', uploadVideoSchema);
 
 
 export const dbConnect = () => {

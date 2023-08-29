@@ -46,7 +46,7 @@ export const VideoCard: React.FC<{
 
             {/* Display other attributes as needed */}
             {/* @ts-ignore */}
-            {(type === 'raw' || type === 'assigned') && <p className={video.isUploaded ? `text-blue-500` : `text-red-500`}>Status: {video.isUploaded ? 'Uploaded' : video.isEdited ? 'Edited' : 'Not Edited'}</p>
+            {(type === 'raw' || type === 'assigned') && <p className={video.isEdited ? `text-green-500` : `text-red-500`}>Status: {video.isUploaded ? 'Uploaded' : video.isEdited ? 'Edited' : 'Not Edited'}</p>
             }
             {<p className='text-gray-600'>DeadLine:  <span className="text-red-500">{video.deadLineDate}</span></p>}
             {(type === 'edit' || type === 'assigned')&& <p className={video.isUploaded ? `text-blue-500` : `text-red-500`}>Status: {video.isUploaded ? 'Uploaded' : 'Not Uploaded'}</p>}

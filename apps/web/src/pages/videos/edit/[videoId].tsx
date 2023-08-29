@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { UpdateForm, Upload, VideoCard } from 'ui';
 import { useSetRecoilState } from 'recoil';
-import { allEditVideo } from 'store';
+import { allEditVideo, allRawVideo } from 'store';
 import { toast } from 'react-hot-toast';
 import { EditVideoType, UpdateVideoType, UploadVideoType, fetchVideoReqType, } from 'zodTypes';
 import { GetServerSidePropsContext } from 'next/types';
@@ -15,6 +15,7 @@ const VideoPage = ({ leger }) => {
   const [localVideo, setVideo] = useState<EditVideoType>();
   const router = useRouter();
   const setAllEditVideos = useSetRecoilState(allEditVideo);
+  const setAllRawVideos = useSetRecoilState(allRawVideo);
   const tagsRef = useRef<HTMLInputElement | null>();
 
   useEffect(() => {
@@ -124,18 +125,37 @@ const VideoPage = ({ leger }) => {
       data: data
     }).then(response => {
 
+      setAllEditVideos(pre => {
+        let prev = pre.find(c => c.videoKey == localVideo.videoKey);
+        prev = { ...prev, ...data };
+        prev.isUploaded = true;
+        return pre;
+      });
+
+      setVideo(prevVideo => {
+        prevVideo.isUploaded = true;
+        return { ...prevVideo, ...data }
+      });
+
+      setAllRawVideos(pre => {
+        let prev = pre.find(p => p.videoKey == localVideo.videoKey);
+        prev = {...prev, ...data};
+        prev.isUploaded = true;
+        return pre;
+      })
+
       toast.success('Video Uploaded SuccessFully to Youtube');
 
     }).catch(err => {
       if(err.response) {
         const msg = err.response.data.message;
-        if(msg.includes('Auth First') || msg.includes('Token Expired')) {
+        if(msg && msg.includes('Auth First') || msg.includes('Token Expired')) {
           toast.error(msg);
-          // router.push('/auth');
+          router.push('/auth');
         }
-        if(!err.response.data.isAuth) {
+        if(err.response.data.isAuth === false) {
           toast.error('Session Expired, Please Login In');
-          // router.push('/login');
+          router.push('/login');
         }
         toast.error(err.message);
         console.error(err);

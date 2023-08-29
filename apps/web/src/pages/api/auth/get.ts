@@ -14,7 +14,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         middle(req, res, async () => {
             const { _id } = req.headers;
-            console.log(_id)
             const { CLIENT_ID, REDIRECT_URI } = process.env;
             if (!CLIENT_ID || CLIENT_ID.length == 0 || !REDIRECT_URI || REDIRECT_URI.length == 0) {
                 throw new Error('Please define the `CLIENT_ID` and `REDIRECT_URI` environment variable');
@@ -27,7 +26,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&state=${_id}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code&access_type=offline&prompt=consent`;
             
             // res.redirect(authUrl);
-            console.log(authUrl);
             return res.status(200).json({ authUrl })
         })
         } catch (error) {

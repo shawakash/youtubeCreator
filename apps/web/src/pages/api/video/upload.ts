@@ -37,15 +37,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         
 
-        middle(req, res, async () => {
-            const { _id } = req.headers;
-            const creator = await Creator.findById(_id);
-
-            let { accessToken, refreshToken } = creator;
-            if (!accessToken || !refreshToken || accessToken.length === 0 || refreshToken.length === 0) {
-                return res.status(400).json({ message: 'Please Get Auth First' });
-            }
-            // const { accessToken, refreshToken } = req.headers; // Get the tokens from the request body
+        tokenValidator(req, res, async () => {
+           
+            const { accessToken, refreshToken } = req.headers; // Get the tokens from the request body
 
 
             const parsedInput = uploadVideoType.safeParse(req.body);
@@ -91,7 +85,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 },
                 status: {
                     privacyStatus: privacy, // Set to 'public' for a public video
-                    publishAt
+                    publishAt,
+                    madeForKids: true,
                 },
             };
 
@@ -111,7 +106,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 
                 if (response.status == 200) {
-                    console.log(response.data.signedUrl)
 
                     const videoFilePath = response.data.signedUrl; // Path to the video file on your server
                     const response2 = await youtube.videos.insert({
@@ -123,10 +117,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             body: (await axios.get(videoFilePath, { responseType: 'stream' })).data,
                         },
                     });
-                    console.log('yes')
+                    console.log('yes');
+
+                    if(response2.status == 200) {
+
+                        const addUploadRes = await axios({
+                            baseURL: BASEURL,
+                            url: '/video/addUploadVideo',
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': req.headers.authorization,
+                                uploadId: response2.data.id
+                            },
+                            data: parsedInput.data
+                        });
+
+
+                    }
+
                     return res.status(200).json({ message: 'Video uploaded', response2 });
                 }
             } catch (error) {
+                console.log(error);
+                if(error.errors)
                 return res.status(500).json({ message: 'Internal Error', err: error })
             }
 
