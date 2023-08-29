@@ -38,16 +38,15 @@ export default async function handler(req, res) {
                 }
 
             } if(type === 'edit') {
-                const editor = await Editor.findById(_id).exec();
-                
-                const editedVideos = await EditedVideo.find({
-                    _id: { $in: editor.editedVideos },
-                })
-                    .populate('editor')
-                    .populate('creator');
+                const editedVideos = await EditedVideo.find({ 
+                     editor: _id
+                }).populate([
+                    {path: 'creator', select: ['username', 'name', 'email', '_id']},
+                    {path: 'editor', select: ['username', 'name', 'email', '_id']},
+                ]);
 
                 if(editedVideos.length == 0) {
-                    return res.status(200).json({ message: 'Start by taking raw videos', edit: editor.editedVideos });
+                    return res.status(200).json({ message: 'Start by taking raw videos', edit: [] });
                 }
                 try {
                     const response = await axios({
@@ -60,6 +59,9 @@ export default async function handler(req, res) {
                             'Content-Type': 'application/json'
                         }
                     });
+
+                    console.log(response.data.videos)
+
                     return res.status(200).json({ edit: response.data.videos });
                     
                 } catch (error) {

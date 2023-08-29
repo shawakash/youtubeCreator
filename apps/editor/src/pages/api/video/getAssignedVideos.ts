@@ -13,6 +13,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         middle(req, res, async () => {
             const { _id } = req.headers;
 
+            
+
             const assignedVideos = await Leger.find({ editor: _id }).populate(
                 {
                     path: 'rawVideo', populate: [

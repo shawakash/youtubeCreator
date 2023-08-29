@@ -27,6 +27,7 @@ const assignedId = ({ video }) => {
       router.back();
     }
     if (video) {
+      console.log(video)
       setVideo(video);
       setUploaded(video.isUploaded);
     }
@@ -34,7 +35,7 @@ const assignedId = ({ video }) => {
 
   const handleSubmit = (data: editVideoInputType) => {
     const selectedFile = editVideo.current;
-
+    console.log(data);
     if (selectedFile) {
       axios({
         baseURL: 'http://localhost:3000/api',
@@ -63,7 +64,7 @@ const assignedId = ({ video }) => {
 
               axios({
                 baseURL: 'http://localhost:3000/api',
-                url: `/video/addEditCredential`,
+                url: `/video/addEditVideo`,
                 method: 'POST',
                 data: data,
                 headers: {
@@ -112,10 +113,9 @@ const assignedId = ({ video }) => {
         if (err) {
           if (err.response && (err.response.status == 403 || err.response.status == 401)) {
             toast.error(err.response.data.message);
-            sessionStorage.clear()
-            router.push('/login');
           }
         } else if (err.response) {
+          toast.error('Video Uploading Error, Aws')
           toast.error(err.response.data.message);
         }
         console.log(err)
@@ -159,6 +159,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         'videoId': assignedId
       }
     });
+    console.log(response.data)
     return {
       props: {
         video: response.data.video

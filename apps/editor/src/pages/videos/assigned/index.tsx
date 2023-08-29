@@ -13,7 +13,6 @@ const assigned: React.FC<{ assigned: legerType[] }> = ({ assigned }) => {
     const editorId = useRecoilValue(editorIdAtom);
 
     useEffect(() => {
-        console.log(assigned)
         setAssignedVideos(assigned);
     }, [])
 

@@ -1,4 +1,4 @@
-import { Leger, dbConnect } from "db";
+import { Creator, Leger, dbConnect } from "db";
 import { NextApiRequest, NextApiResponse } from "next";
 import middle from "../middle";
 import { legerBody, legerType } from "zodTypes";

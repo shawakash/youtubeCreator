@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if(!rawVideo) {
                 return res.status(404).json({ message: 'Video Not found' });
             }
-            const leger = await Leger.findOneAndDelete({ rawVideo: rawVideo._id, editor: _id });
+            const leger = await Leger.findOne({ rawVideo: rawVideo._id, editor: _id });
 
             if(!leger) {
                 return res.status(403).json({ message: 'Unauthorized Video Upload Attempt' })

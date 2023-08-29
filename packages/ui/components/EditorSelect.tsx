@@ -3,7 +3,7 @@ import { useSetRecoilState } from 'recoil';
 import { EditorType } from 'zodTypes';
 import { editorsRawVideoAtom } from 'store';
 
-export const EditorSelect: React.FC<{ editors: Partial<EditorType[]>, onSelect: (value: string) => void }> = ({ editors, onSelect }) => {
+export const EditorSelect: React.FC<{ editors: Partial<EditorType[]>, onSelect: (value: string) => void, isSelected: boolean }> = ({ editors, onSelect, isSelected }) => {
 
     const [localEditors, setLocalEditors] = useState<Partial<EditorType[]>>(editors);
     const [isEmpty, setEmpty] = useState<boolean>();
@@ -22,7 +22,7 @@ export const EditorSelect: React.FC<{ editors: Partial<EditorType[]>, onSelect: 
 
     return (
         <>
-            <select
+            {!isSelected && <><select
                 onChange={(e) => setValue(e.target.value)}
                 className="block w-[500px] text-xl h-[60px] px-4 bg-white border border-gray-300 rounded-xl shadow-lg  hover:shadow-2xl transition-all duration-300 focus:ring-indigo-500 focus:border-indigo-500 "
             >
@@ -34,17 +34,16 @@ export const EditorSelect: React.FC<{ editors: Partial<EditorType[]>, onSelect: 
                         {option?.name?.charAt(0).toUpperCase() + option?.name?.slice(1)} - @{option?.username}
                     </option>
                 ))}
-            </select>
-            <button
-            onClick={() => {
-                if(value) {
-                    onSelect(value);
-                }
-            }}
-            className="w-fit bg-blue-500 text-white py-2 px-4 rounded-2xl hover:bg-blue-600 hover:scale-105 active:scale-90 transition-all"
-          >
-              Select This Editor
-          </button>
+            </select><button
+                onClick={() => {
+                    if (value) {
+                        onSelect(value);
+                    }
+                } }
+                className="w-fit bg-blue-500 text-white py-2 px-4 rounded-2xl hover:bg-blue-600 hover:scale-105 active:scale-90 transition-all"
+            >
+                    Select This Editor
+                </button></>}
         </>
     );
 }

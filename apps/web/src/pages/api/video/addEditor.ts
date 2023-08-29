@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         middle(req, res, async () => {
             const { _id } = req.headers;
             const { videoId, editor } = req.body;
-            const creator = await Creator.findById(_id).select(['editor']);
+            const creator = await Creator.findById(_id).select('editor');
             if(!creator) {
                 return res.status(404).json({ message: 'Authentication Error' });
             }
@@ -40,9 +40,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if(!(edit.rawVideos.find(rv => rv == videoId))) {
                 edit.rawVideos.push(videoId);
             }
-
-            if(!(creator.editor.find(ed => ed == edit._id))) {
-                creator.editor.push(edit._id)
+            console.log('creator editor', (creator.editor.find(ed => ed == editor)))
+            if(!(creator.editor.find(ed => ed == editor))) {
+                creator.editor.push(editor)
             }
             await creator.save();
             await edit.save();

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { EditorSelect, UpdateForm, VideoCard } from 'ui';
-import { useSetRecoilState } from 'recoil';
-import { allRawVideo, legersAtom } from 'store';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { allRawVideo, creatorIdAtom, legersAtom } from 'store';
 import { toast } from 'react-hot-toast';
 import { EditorType, RawVideoType, UpdateVideoType, fetchVideoReqType, legerInType, rawVideo } from 'zodTypes';
 import { GetServerSidePropsContext } from 'next/types';
@@ -15,15 +15,21 @@ const VideoPage = ({ leger }) => {
   const [localVideo, setVideo] = useState<RawVideoType>();
   const [editors, setEditors] = useState<EditorType[]>();
   const router = useRouter();
+  const creatorId = useRecoilValue(creatorIdAtom);
   const setAllRawVideos = useSetRecoilState(allRawVideo);
   const setLegers = useSetRecoilState(legersAtom);
-  // const 
+  const [isSelected, setSelected] = useState<boolean>(false);
 
   useEffect(() => {
     if (!leger) {
       toast.error('Server Error');
       router.back();
     } if (leger) {
+      if(leger.editor) {
+        setSelected(true);
+      } else {
+        setSelected(false)
+      }
       setVideo(leger.rawVideo);
       setEditors(leger.editors);
     }
@@ -130,25 +136,32 @@ const VideoPage = ({ leger }) => {
           editor: value
         }
       }).then(response => {
+        toast.success('Editor Added Successfully');
+        console.log(response.data.edit);
+
+        setSelected(true);
+
         setAllRawVideos(rvs => {
           const rv = rvs.find(r => r._id == localVideo._id);
-          rv['editor'] = response.data.editor;
+          console.log(rv)
+          rv.editor = response.data.editor;
+          console.log(rv)
           return rvs;
         });
-
-        setLegers(ls => {
-          const l = ls.find(de => de.rawVideo._id == localVideo._id);
-          l['editor'] = response.data.editor;
-          l.rawVideo['editor'] = response.data.editor;
-          return ls;
-        });
-
+        
         setVideo(vid => {
           vid.editor = response.data.editor;
           return vid;
         });
+        router.push('/video/raw');
 
-        toast.success('Editor Added Successfully');
+        setLegers(ls => {
+          const l = ls.find(de => de.rawVideo._id == localVideo._id);
+          l.editor = response.data.editor;
+          l.rawVideo.editor = response.data.editor;
+          return ls;
+        });
+
 
       }).catch(err => {
 
@@ -171,11 +184,11 @@ const VideoPage = ({ leger }) => {
     <>
 
       <div className="h-full  bg-gray-100 flex justify-around py-6">
-        {leger && localVideo && <VideoCard video={localVideo} type='raw' clientId={leger.creator._id} client='creator' onDelete={removeFromLeger} page='video' />}
+        {leger && localVideo && <VideoCard video={localVideo} type='raw' clientId={creatorId} client='creator' onDelete={removeFromLeger} page='video' />}
         <div className="flex flex-col gap-y-8">
 
           {localVideo && <UpdateForm video={localVideo} type='raw' propData={handleUpdate} />}
-          {!localVideo?.editor && editors && <EditorSelect editors={editors} onSelect={handleSelect} />}
+          {!localVideo?.editor && editors && <EditorSelect isSelected={isSelected} editors={editors} onSelect={handleSelect} />}
 
         </div>
       </div>

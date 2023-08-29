@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 
             } else if (type === 'edit') {
                 videos = await EditedVideo.find({
-                    _id: { $in: creator.editedVideos },
+                    creator: _id
                 }).populate([{ path: 'creator', select: ['username', '_id', 'rawVideos', 'editedVideos', 'name', 'email'] }, { path: 'editor', select: ['username', '_id', 'editedVideos', 'name', 'email'] }]);
             }
             if (videos.length == 0) {

@@ -1,4 +1,4 @@
-import { EditedVideo, Leger, dbConnect } from "db";
+import { EditedVideo, Leger, RawVideo, dbConnect } from "db";
 import { NextApiRequest, NextApiResponse } from "next";
 import middle from "../middle";
 import axios from "axios";
@@ -13,6 +13,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         await dbConnect();
         middle(req, res, async () => {
             const { _id, videoid } = req.headers;
+
+            const rawVideo = await RawVideo.findById(videoid);
+            const editedVideo = await EditedVideo.findOne({ videoKey: rawVideo.videoKey, editor: _id }).populate([
+                { path: 'creator', select: ['username', 'name', 'email', '_id'] },
+                { path: 'editor', select: ['username', 'name', 'email', '_id'] }
+            ]);
+
+            if(editedVideo) {
+
+                const response = await axios({
+                    baseURL: BASEURL,
+                    url: '/video/getSignedUrl',
+                    method: "GET",
+                    headers: {
+                        'Authorization': req.headers.authorization,
+                        'videofilekey': editedVideo.videoKey,
+                        'bucketname': editedVideo.bucketName,
+                        'expiresin': 3600 * 24 * 4,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const url = response.data.signedUrl;
+                editedVideo.url = url;
+
+                return res.status(200).json({ message: 'Got It', video: editedVideo })
+            }
+
             const assignedVideo = await Leger.findOne({ rawVideo: videoid, editor: _id  }).populate(
                 {
                     path: 'rawVideo', populate: [

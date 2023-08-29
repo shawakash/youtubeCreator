@@ -1,4 +1,4 @@
-import { EditedVideo, Leger, RawVideo, dbConnect } from "db";
+import { Creator, EditedVideo, Leger, RawVideo, dbConnect } from "db";
 import { NextApiRequest, NextApiResponse } from "next";
 import middle from "../auth/middle";
 import { fetchVideoBody } from "zodTypes";
@@ -36,6 +36,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(400).json({ message: 'Validation Error', err: parsedInput });
             }
             const { videoId, type } = parsedInput.data;
+            const { _id } = req.headers;
+
             if (type === 'raw') {
                 const leger = await Leger.findOne({ rawVideo: videoId }).populate([
                     { path: 'creator', select: ['name', 'username', 'email', '_id'] },
@@ -44,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     { path: 'editor', select: ['name', 'username', 'email', '_id'] }]);
 
                 if (leger) {
-
+                   console.log(leger.editors)
                     leger.rawVideo.url = await getUrl(leger.rawVideo.bucketName, leger.rawVideo.videoKey, req.headers.authorization);
                     return res.status(200).json({ message: 'Found', video: leger });
                 }
@@ -54,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (!video) {
                     return res.status(404).json({ message: 'Invalid Video Id' });
                 }
-
+                console.log('Hello')
                 video.url = await getUrl(video.bucketName, video.videoKey, req.headers.authorization);
                 let dummyLeger = { rawVideo: video, editor: video.editor, editors: [], creator: video.creator };
                 return res.status(200).json({ message: 'Found', video: dummyLeger });

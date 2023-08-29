@@ -1,4 +1,4 @@
-import { Creator, RawVideo, dbConnect } from "db";
+import { Creator, Leger, RawVideo, dbConnect } from "db";
 import { NextApiRequest, NextApiResponse } from "next";
 import middle from "../auth/middle";
 import { rawVideo } from "zodTypes";
@@ -19,8 +19,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
             const { _id } = req.headers;
 
-            const creator = await Creator.findById(_id).select(['username', 'email', 'name', '_id', 'rawVideos']);
+            const creator = await Creator.findById(_id).select(['username', 'email', 'name', '_id', 'rawVideos', 'editor']);
             const raw = new RawVideo({...parsedInput.data, creator: _id});
+
+            if(creator.editor.length > 0) {
+                console.log(creator.editor);
+                const leger = new Leger({
+                    editors: [...creator.editor],
+                    rawVideo: raw._id,
+                    creator: creator._id
+                });
+                await leger.save();
+            }
+
             await raw.save();
             creator.rawVideos.push(raw._id);
             await creator.save();

@@ -17,6 +17,7 @@ export const VideoCard: React.FC<{
     page = 'card', onDelete }) => {
 
   const renderedComponent = () => {
+    console.log(video.contentType)
     return (
       <>
         <div className={`bg-white ${page === 'card' ? 'w-[500px]' : "max-w-[800px] min-w-[600px]"} rounded-xl flex flex-col gap-y-1 shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 overflow-hidden`}>
@@ -31,8 +32,8 @@ export const VideoCard: React.FC<{
           <div className="p-4 flex flex-col gap-y-2">
             <Title title={video.title} />
             <div className="">
-              <p className="text-lg font-medium">{client == 'creator' ? 'Video Description: ' : 'Note To Editor: '}</p>
-              <p className={`text-gray-600 ${page === 'card' ? 'line-clamp-3' : ''}`}>{(client == 'creator' && type == 'edit') ? video.description : video.noteToEditor}</p>
+              <p className="text-lg font-medium">Video Description:</p>
+              <p className={`text-gray-600 ${page === 'card' ? 'line-clamp-3' : ''}`}>{video.description}</p>
             </div>
               {page !== 'card' && <div className="">
               <p className="text-lg font-medium">Note To Editor: </p>
@@ -41,7 +42,7 @@ export const VideoCard: React.FC<{
 
             {/* Additional attributes can be displayed here */}
             {<p className='text-blue-500 text-lg' >Uploader: {clientId == video.creator._id ? 'You' : (video.creator?.name)?.charAt(0).toUpperCase() + video.creator?.name?.slice(1)}</p>}
-            {<p className={`text-${video.editor != null ? 'blue' : 'red'}-500`} >Editor: {clientId == video.editor?._id && video.editor ? 'You' : (video.editor?.name)?.charAt(0).toUpperCase() + video.editor?.name?.slice(1) || 'None'}</p>}
+            {<p className={`text-${video.editor != null ? 'blue' : 'red'}-500`} >Editor: {clientId == video.editor?._id && video.editor ? 'You' : (video.editor?.name)?.charAt(0).toUpperCase() + video.editor?.name?.slice(1)}</p>}
 
             {/* Display other attributes as needed */}
             {(type === 'raw' || type === 'assigned') && <p className={video.isUploaded ? `text-blue-500` : `text-red-500`}>Status: {video.isUploaded ? 'Uploaded' : video.isEdited ? 'Edited' : 'Not Edited'}</p>

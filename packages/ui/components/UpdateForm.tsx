@@ -78,7 +78,7 @@ export const UpdateForm: React.FC<{
                         deadLineTime: deadLineTime.current?.value || '12:00',
                         videoKey: video.videoKey,
                         bucketName: 'creator-edit-video',
-                        contentType: fileRef.current?.type || 'video/*'
+                        contentType: 'video/mp4'
                     };
                     propData(data);
                 }
@@ -195,7 +195,7 @@ export const UpdateForm: React.FC<{
                 <div className="flex justify-between items-center">
 
 
-                    {(type === 'raw' || type == 'assigned')  &&
+                    {(type == 'assigned')  &&
                         <div className="flex justify-between gap-x-4 items-center">
                             <div className="block font-medium mb-1">
                                 Edited Video:

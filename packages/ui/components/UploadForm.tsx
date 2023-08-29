@@ -112,7 +112,6 @@ export const UploadForm: React.FC<{
                             ref={videoName}
                             className="w-full p-2 border rounded"
                             required
-                            value={client === 'editor' ? '' : ''}
                             readOnly={client === 'editor'}
                         />
                     </div>
