@@ -1,28 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
-import { UpdateForm, VideoCard } from 'ui';
+import { UpdateForm, Upload, VideoCard } from 'ui';
 import { useSetRecoilState } from 'recoil';
 import { allEditVideo } from 'store';
 import { toast } from 'react-hot-toast';
-import { EditVideoType, UpdateVideoType, fetchVideoReqType, } from 'zodTypes';
+import { EditVideoType, UpdateVideoType, UploadVideoType, fetchVideoReqType, } from 'zodTypes';
 import { GetServerSidePropsContext } from 'next/types';
 import axios from 'axios';
 import cookie from 'cookie';
 import protection from '../../../../utils/protection';
 
 
-const VideoPage = ({  leger }) => {
+const VideoPage = ({ leger }) => {
   const [localVideo, setVideo] = useState<EditVideoType>();
   const router = useRouter();
   const setAllEditVideos = useSetRecoilState(allEditVideo);
+  const tagsRef = useRef<HTMLInputElement | null>();
 
   useEffect(() => {
-      if(!leger) {
-        toast.error('Server Error');
-        router.back();
-      } if(leger) {
-        setVideo(leger);
-      }
+    if (!leger) {
+      toast.error('Server Error');
+      router.back();
+    } if (leger) {
+      setVideo(leger);
+    }
   }, []);
 
   const handleUpdate = (data: UpdateVideoType) => {
@@ -42,7 +43,7 @@ const VideoPage = ({  leger }) => {
 
       setAllEditVideos(pre => {
         let prev = pre.find(c => c.videoKey == localVideo.videoKey);
-        prev = {...prev, ...data};
+        prev = { ...prev, ...data };
         return pre;
       });
 
@@ -69,7 +70,7 @@ const VideoPage = ({  leger }) => {
 
     });
   }
-  
+
 
   const removeFromLeger = () => {
     axios({
@@ -85,7 +86,7 @@ const VideoPage = ({  leger }) => {
       }
     }).then(response => {
 
-      setAllEditVideos(rvs =>  rvs.filter(rv => rv._id != localVideo._id));
+      setAllEditVideos(rvs => rvs.filter(rv => rv._id != localVideo._id));
       toast.success(response.data.message);
       router.push('/videos/edit');
 
@@ -93,9 +94,11 @@ const VideoPage = ({  leger }) => {
 
       if (err) {
         if (err.response && (err.response.status == 403)) {
+          console.clear()
+          console.log(err);
           toast.error(err.response.data.message);
-          sessionStorage.clear()
-          router.push('/login');
+          // sessionStorage.clear()
+          // router.push('/login');
         } else if (err.response.status == 401) {
           toast.error('Please first allow us your youtube access');
           router.push('/auth')
@@ -106,21 +109,58 @@ const VideoPage = ({  leger }) => {
       console.log(err);
 
     })
+  };
+
+  const handleUpload = (data: UploadVideoType) => {
+    console.log(data)
+    axios({
+      baseURL: 'http://localhost:3000/api',
+      url: '/video/upload',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': sessionStorage.getItem('creatorToken')
+      },
+      data: data
+    }).then(response => {
+
+      toast.success('Video Uploaded SuccessFully to Youtube');
+
+    }).catch(err => {
+      if(err.response) {
+        const msg = err.response.data.message;
+        if(msg.includes('Auth First') || msg.includes('Token Expired')) {
+          toast.error(msg);
+          // router.push('/auth');
+        }
+        if(!err.response.data.isAuth) {
+          toast.error('Session Expired, Please Login In');
+          // router.push('/login');
+        }
+        toast.error(err.message);
+        console.error(err);
+        // router.reload();
+      }
+    })
+
   }
 
   return (
     <>
-    <div className="h-screen bg-gray-100 flex justify-around items-center">
-      {localVideo && <VideoCard video={localVideo} type='edit' clientId={localVideo.creator._id} client='creator' onDelete={removeFromLeger} page='video' />}
-      {/* @ts-ignore */}
-      {localVideo && <UpdateForm video={localVideo} type='edit' propData={handleUpdate} />  }
-    </div>
+      <div className="h-screen bg-gray-100 flex justify-around items-center">
+        {localVideo && <VideoCard video={localVideo} type='edit' clientId={localVideo.creator._id} client='creator' onDelete={removeFromLeger} page='video' />}
+        <div className="">
+          {/* @ts-ignore */}
+          {localVideo && <UpdateForm client='creator' video={localVideo} tagsRef={tagsRef} type='edit' propData={handleUpdate} propUpload={handleUpload} />}
+        </div>
+
+      </div>
     </>
   )
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const {videoId} = context.params;
+  const { videoId } = context.params;
   const { BASEURL } = process.env;
 
   const cookies = context.req.headers.cookie;
@@ -144,7 +184,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     });
 
-    
+
     return {
       props: {
         leger: response.data.video
@@ -153,14 +193,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   } catch (error) {
     console.error(error)
-    return { 
+    return {
       props: {
         leger: null
       }
-    }    
+    }
   }
 
-  
+
 }
 
 export default protection(VideoPage);

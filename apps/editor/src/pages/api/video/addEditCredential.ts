@@ -17,15 +17,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if(!parsedInput.success) {
                 return res.status(400).json({ message: 'Validation Error', err: parsedInput })
             }
-            console.log(parsedInput)
-            console.log('from here')
             const { _id } = req.headers;
             const { videoKey } = parsedInput.data;
 
             const editor = await Editor.findById(_id).select(['username', 'email', 'name', '_id', 'editedVideos']);
             const rawVideo = await RawVideo.findOne({ videoKey });
-            console.log(videoKey);
-            console.log(rawVideo)
             if(!rawVideo) {
                 return res.status(404).json({ message: 'Video Not found' });
             }

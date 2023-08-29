@@ -17,7 +17,6 @@ export const VideoCard: React.FC<{
     page = 'card', onDelete }) => {
 
   const renderedComponent = () => {
-    console.log(video.contentType)
     return (
       <>
         <div className={`bg-white ${page === 'card' ? 'w-[500px]' : "max-w-[800px] min-w-[600px]"} rounded-xl flex flex-col gap-y-1 shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 overflow-hidden`}>
@@ -37,6 +36,7 @@ export const VideoCard: React.FC<{
             </div>
               {page !== 'card' && <div className="">
               <p className="text-lg font-medium">Note To Editor: </p>
+              {/* @ts-ignore */}
               <p className={`text-gray-600 `}>{video.noteToEditor}</p>
             </div>}
 
@@ -45,6 +45,7 @@ export const VideoCard: React.FC<{
             {<p className={`text-${video.editor != null ? 'blue' : 'red'}-500`} >Editor: {clientId == video.editor?._id && video.editor ? 'You' : (video.editor?.name)?.charAt(0).toUpperCase() + video.editor?.name?.slice(1)}</p>}
 
             {/* Display other attributes as needed */}
+            {/* @ts-ignore */}
             {(type === 'raw' || type === 'assigned') && <p className={video.isUploaded ? `text-blue-500` : `text-red-500`}>Status: {video.isUploaded ? 'Uploaded' : video.isEdited ? 'Edited' : 'Not Edited'}</p>
             }
             {<p className='text-gray-600'>DeadLine:  <span className="text-red-500">{video.deadLineDate}</span></p>}

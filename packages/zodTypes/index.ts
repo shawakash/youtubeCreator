@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { TypeOf, z } from 'zod';
 
 const bufferTransformer = z
   .string()
@@ -126,3 +126,17 @@ export const removeFromLegerType = z.object({
 });
 
 export type RemoveFromLegerType = z.infer<typeof removeFromLegerType>;
+
+export const uploadVideoType = z.object({
+  title: z.string(),
+  description: z.string(),
+  thumbnail: z.string(),
+  publishAt: z.string(),
+  privacy: z.string(),
+  category: z.string(),
+  videoKey: z.string(),
+  bucketName: z.string(),
+  tags: z.array(z.string())
+});
+
+export type UploadVideoType = z.infer<typeof uploadVideoType>;

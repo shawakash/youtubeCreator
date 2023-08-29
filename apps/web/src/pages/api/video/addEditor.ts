@@ -40,7 +40,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if(!(edit.rawVideos.find(rv => rv == videoId))) {
                 edit.rawVideos.push(videoId);
             }
-            console.log('creator editor', (creator.editor.find(ed => ed == editor)))
             if(!(creator.editor.find(ed => ed == editor))) {
                 creator.editor.push(editor)
             }

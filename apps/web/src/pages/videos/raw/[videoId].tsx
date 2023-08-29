@@ -137,15 +137,12 @@ const VideoPage = ({ leger }) => {
         }
       }).then(response => {
         toast.success('Editor Added Successfully');
-        console.log(response.data.edit);
 
         setSelected(true);
 
         setAllRawVideos(rvs => {
           const rv = rvs.find(r => r._id == localVideo._id);
-          console.log(rv)
           rv.editor = response.data.editor;
-          console.log(rv)
           return rvs;
         });
         
@@ -187,7 +184,7 @@ const VideoPage = ({ leger }) => {
         {leger && localVideo && <VideoCard video={localVideo} type='raw' clientId={creatorId} client='creator' onDelete={removeFromLeger} page='video' />}
         <div className="flex flex-col gap-y-8">
 
-          {localVideo && <UpdateForm video={localVideo} type='raw' propData={handleUpdate} />}
+          {localVideo && <UpdateForm client='creator' video={localVideo} type='raw' propData={handleUpdate} />}
           {!localVideo?.editor && editors && <EditorSelect isSelected={isSelected} editors={editors} onSelect={handleSelect} />}
 
         </div>

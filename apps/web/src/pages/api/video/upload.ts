@@ -5,6 +5,7 @@ import tokenValidator from '../auth/tokenValidator';
 import fs from 'fs';
 import middle from '../auth/middle';
 import { Creator } from 'db';
+import { uploadVideoType } from 'zodTypes';
 
 const { BASEURL } = process.env;
 
@@ -17,8 +18,6 @@ async function main(oauth2Client, refresh_Token) {
         'refresh_token': refresh_Token
     })
     const token = await oauth2Client.getAccessToken();
-    console.log('from here')
-    console.log(token);
     return token.token;
 }
 
@@ -38,18 +37,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         
 
-        tokenValidator(req, res, async () => {
+        middle(req, res, async () => {
+            const { _id } = req.headers;
+            const creator = await Creator.findById(_id);
 
-            const { accessToken, refreshToken } = req.headers; // Get the tokens from the request body
-
-            console.log(accessToken)
-
-            const video = req.body;
-            console.log(video);
-
+            let { accessToken, refreshToken } = creator;
+            if (!accessToken || !refreshToken || accessToken.length === 0 || refreshToken.length === 0) {
+                return res.status(400).json({ message: 'Please Get Auth First' });
+            }
+            // const { accessToken, refreshToken } = req.headers; // Get the tokens from the request body
 
 
-            console.log(refreshToken)
+            const parsedInput = uploadVideoType.safeParse(req.body);
+            if(!parsedInput.success) {
+                return res.status(400).json({ message: 'Validation Error', err: parsedInput });
+            } 
+
+
+            const { 
+                title,
+                description,
+                privacy,
+                publishAt,
+                category,
+                videoKey,
+                bucketName,
+                thumbnail,
+                tags
+            } = parsedInput.data;
+
+
+
             const oauth2Client = new google.auth.OAuth2(
                 CLIENT_ID,
                 CLIENT_SECRET,
@@ -66,11 +84,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const videoDetails = {
                 snippet: {
-                    title: video.title,
-                    description: video.description,
+                    title: title,
+                    description: description,
+                    tags,
+                    category: parseInt(category)
                 },
                 status: {
-                    privacyStatus: 'private', // Set to 'public' for a public video
+                    privacyStatus: privacy, // Set to 'public' for a public video
+                    publishAt
                 },
             };
 
@@ -82,12 +103,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': req.headers.authorization,
-                        'videofilekey': video.videoKey,
-                        'bucketName': video.bucketName,
+                        'videofilekey': videoKey,
+                        'bucketName': bucketName,
                         'expiresin': 3600 * 24
                     }
                 });
+
+                
                 if (response.status == 200) {
+                    console.log(response.data.signedUrl)
 
                     const videoFilePath = response.data.signedUrl; // Path to the video file on your server
                     const response2 = await youtube.videos.insert({

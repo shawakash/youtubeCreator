@@ -35,11 +35,11 @@ const tokenValidator = async (req: NextApiRequest, res: NextApiResponse, next: (
             if (!accessToken || !refreshToken || accessToken.length === 0 || refreshToken.length === 0) {
                 return res.status(400).json({ message: 'Please Get Auth First' });
             }
-
+            
             try {
-
-
-
+                
+                
+                
                 const response = await axios.post(OUTH_TOKEN_VALID_URL, {
                     access_token: accessToken,
                     refresh_token: refreshToken,
@@ -80,7 +80,7 @@ const tokenValidator = async (req: NextApiRequest, res: NextApiResponse, next: (
 
                     return res.status(401).json({ message: 'Token expired, Please re-auth' });
                 }
-                return res.status(400).json({ message: 'Tokens Expired, Please Reauth' })
+                return res.status(400).json({ message: 'Token Expired, Please Reauth' })
             }
         })
     } catch (error) {

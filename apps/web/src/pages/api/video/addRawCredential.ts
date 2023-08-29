@@ -23,7 +23,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const raw = new RawVideo({...parsedInput.data, creator: _id});
 
             if(creator.editor.length > 0) {
-                console.log(creator.editor);
                 const leger = new Leger({
                     editors: [...creator.editor],
                     rawVideo: raw._id,

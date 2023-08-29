@@ -9,3 +9,6 @@ export * from './UploadForm';
 export * from './UpdateForm';
 export * from './Title';
 export * from './EditorSelect';
+export * from './Upload';
+export * from './CategoryIdSelect';
+export * from './PrivacySelect';

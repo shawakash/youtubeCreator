@@ -27,7 +27,6 @@ const assignedId = ({ video }) => {
       router.back();
     }
     if (video) {
-      console.log(video)
       setVideo(video);
       setUploaded(video.isUploaded);
     }
@@ -35,7 +34,6 @@ const assignedId = ({ video }) => {
 
   const handleSubmit = (data: editVideoInputType) => {
     const selectedFile = editVideo.current;
-    console.log(data);
     if (selectedFile) {
       axios({
         baseURL: 'http://localhost:3000/api',
@@ -159,7 +157,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         'videoId': assignedId
       }
     });
-    console.log(response.data)
     return {
       props: {
         video: response.data.video
