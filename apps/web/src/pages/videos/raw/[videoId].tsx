@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { EditorSelect, UpdateForm, VideoCard } from 'ui';
+import { ChatBox, EditorSelect, UpdateForm, VideoCard } from 'ui';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { allRawVideo, creatorIdAtom, legersAtom } from 'store';
 import { toast } from 'react-hot-toast';
@@ -186,7 +186,10 @@ const VideoPage = ({ leger }) => {
 
           {localVideo && <UpdateForm client='creator' video={localVideo} type='raw' propData={handleUpdate} />}
           {!localVideo?.editor && editors && <EditorSelect isSelected={isSelected} editors={editors} onSelect={handleSelect} />}
-
+          {localVideo && localVideo.editor && <div className="">
+            <h1 className="">Chat with the editor</h1>
+            <ChatBox url={'http://localhost:3000/api/chat/ws'} editorId={localVideo.editor._id} creatorId={localVideo.creator._id} token={sessionStorage.getItem("creatorToken")} />
+          </div> }
         </div>
       </div>
 

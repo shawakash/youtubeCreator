@@ -12,4 +12,4 @@ export * from './EditorSelect';
 export * from './Upload';
 export * from './CategoryIdSelect';
 export * from './PrivacySelect';
-export * from './ChatBox';
+export * from "./ChatBox";

@@ -21,9 +21,11 @@
     "tailwindcss": "3.3.3",
     "tsconfig": "*",
     "typescript": "^4.5.2",
-    "zodTypes": "*"
+    "zodTypes": "*",
+    "recoil": "^0.7.7",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2"
   },
   "dependencies": {
-    "recoil": "^0.7.7"
   }
 }
