@@ -24,6 +24,7 @@
     "@types/node": "20.5.1",
     "@types/react": "18.2.20",
     "@types/react-dom": "18.2.7",
+    "@types/websocket": "^1.0.6",
     "autoprefixer": "10.4.15",
     "aws-sdk": "^2.1440.0",
     "axios": "^1.4.0",
@@ -46,10 +47,12 @@
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
     "recoil": "^0.7.7",
+    "socket.io": "^4.7.2",
     "store": "*",
     "tailwindcss": "3.3.3",
     "typescript": "5.1.6",
     "ui": "*",
+    "websocket": "^1.0.34",
     "zodTypes": "*"
   },
   "devDependencies": {
