@@ -2,6 +2,7 @@ import React, { FormEvent, useRef, useState } from 'react'
 import { EditVideoType, RawVideoType, UpdateVideoType, UploadVideoType, editVideoInputType, rawVideoInputType } from 'zodTypes';
 import { CategorySelect } from './CategoryIdSelect';
 import PrivacyStatusSelect from './PrivacySelect';
+import moment from "moment-timezone";
 
 
 
@@ -108,13 +109,14 @@ export const UpdateForm: React.FC<{
 
     }
 
-    const formatPublishAt = (date: string, time: string): string => {
-        const [year, month, day] = date.split('-').map(Number);
-        const [hours, minutes] = time.split(':').map(Number);
-      
-        const isoDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
-      
-        return isoDate.toISOString();
+    function convertToYouTubeUTC(localDate: string, localTime: string) {
+        const localDateTime = `${localDate} ${localTime}`;
+        const localTimezone = moment.tz.guess(); // Guess the local timezone
+        
+        // Convert local time to UTC
+        const utcTime = moment.tz(localDateTime, localTimezone).utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+        
+        return utcTime;
       }
       
 
@@ -140,22 +142,41 @@ export const UpdateForm: React.FC<{
                 tagsRef.current?.value !== null
 
             ) {
-                const publishAt = formatPublishAt(deadLineDate.current.value, deadLineTime.current.value);
-                const data: UploadVideoType = {
-                    title: titleRef.current.value,
-                    thumbnail: thumbnailRef.current.value,
-                    publishAt,
-                    privacy: selectedPrivacyStatus,
-                    category: selectedCategory,
-                    description: descRef.current.value,
-                    videoKey: video.videoKey,
-                    bucketName: video.bucketName,
-                    tags: tagsRef.current.value.split(',')
+                const publishAt = convertToYouTubeUTC(deadLineDate.current.value || video.deadLineDate, deadLineTime.current.value || video.deadLineTime);
+                let data: UploadVideoType;
+                if(selectedPrivacyStatus == 'private') {
+                    data = {
+                        title: titleRef.current.value,
+                        thumbnail: thumbnailRef.current.value,
+                        publishAt,
+                        privacy: selectedPrivacyStatus,
+                        category: selectedCategory,
+                        description: descRef.current.value,
+                        videoKey: video.videoKey,
+                        bucketName: video.bucketName,
+                        tags: tagsRef.current.value.split(',')
+                    };
+                    if (propUpload) {
+                        propUpload(data);
+                    }
+
+                } else if(selectedPrivacyStatus == 'public') {
+                    data = {
+                        title: titleRef.current.value,
+                        thumbnail: thumbnailRef.current.value,
+                        privacy: selectedPrivacyStatus,
+                        category: selectedCategory,
+                        description: descRef.current.value,
+                        videoKey: video.videoKey,
+                        bucketName: video.bucketName,
+                        tags: tagsRef.current.value.split(',')
+                    };
+                    if (propUpload) {
+                        propUpload(data);
+                    }
                 }
 
-                if (propUpload) {
-                    propUpload(data);
-                }
+                
             }
         }
     }

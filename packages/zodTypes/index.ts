@@ -131,7 +131,7 @@ export const uploadVideoType = z.object({
   title: z.string(),
   description: z.string(),
   thumbnail: z.string(),
-  publishAt: z.string(),
+  publishAt: z.string().optional(),
   privacy: z.string(),
   category: z.string(),
   videoKey: z.string(),
