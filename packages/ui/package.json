@@ -6,7 +6,9 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
-    "generate:component": "turbo gen react-component"
+    "generate:component": "turbo gen react-component",
+    "start:editor": "cd packages/editor && yarn start",
+    "start:creator": "cd packages/creator && yarn start"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

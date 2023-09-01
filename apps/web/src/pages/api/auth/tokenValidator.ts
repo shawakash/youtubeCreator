@@ -35,11 +35,11 @@ const tokenValidator = async (req: NextApiRequest, res: NextApiResponse, next: (
             if (!accessToken || !refreshToken || accessToken.length === 0 || refreshToken.length === 0) {
                 return res.status(400).json({ message: 'Please Get Auth First' });
             }
-            
+
             try {
-                
-                
-                
+
+
+
                 const response = await axios.post(OUTH_TOKEN_VALID_URL, {
                     access_token: accessToken,
                     refresh_token: refreshToken,
@@ -53,34 +53,29 @@ const tokenValidator = async (req: NextApiRequest, res: NextApiResponse, next: (
             } catch (error) {
                 console.log('Token Expired');
                 console.log('Fetching new token');
-                try {
-                    const response = await axios.post('https://oauth2.googleapis.com/token', null, {
-                        params: {
-                            client_id: CLIENT_ID,
-                            client_secret: CLIENT_SECRET,
-                            refresh_token: refreshToken,
-                            grant_type: 'refresh_token'
-                        }
-                    });
 
-                    const newAccessToken = response.data.access_token;
-                    if (newAccessToken) {
-                        accessToken = newAccessToken;
-                        creator.accessToken = newAccessToken;
-                        await creator.save();
+                const response = await axios.post('https://oauth2.googleapis.com/token', null, {
+                    params: {
+                        client_id: CLIENT_ID,
+                        client_secret: CLIENT_SECRET,
+                        refresh_token: refreshToken,
+                        grant_type: 'refresh_token'
                     }
-
-
-                    req.headers['accessToken'] = accessToken;
-                    req.headers['refreshToken'] = refreshToken;
-                    next();
-
-                } catch (error) {
-                    console.error('Error fetching new access token:', error);
-
-                    return res.status(401).json({ message: 'Token expired, Please re-auth' });
+                });
+                const newAccessToken = response.data.access_token;
+                console.log(newAccessToken)
+                if (newAccessToken) {
+                    accessToken = newAccessToken;
+                    creator.accessToken = newAccessToken;
+                    await creator.save();
                 }
-                return res.status(400).json({ message: 'Token Expired, Please Reauth' })
+
+
+                req.headers['accessToken'] = accessToken;
+                req.headers['refreshToken'] = refreshToken;
+                next();
+
+
             }
         })
     } catch (error) {
