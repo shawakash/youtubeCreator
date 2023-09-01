@@ -36,7 +36,7 @@ const assignedId = ({ video }) => {
     const selectedFile = editVideo.current;
     if (selectedFile) {
       axios({
-        baseURL: 'http://localhost:3000/api',
+        baseURL: 'http://localhost:3001/api',
         url: '/video/getPutSignedUrl',
         method: 'GET',
         headers: {
@@ -61,7 +61,7 @@ const assignedId = ({ video }) => {
 
 
               axios({
-                baseURL: 'http://localhost:3000/api',
+                baseURL: 'http://localhost:3001/api',
                 url: `/video/addEditVideo`,
                 method: 'POST',
                 data: data,

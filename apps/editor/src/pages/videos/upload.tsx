@@ -34,7 +34,7 @@ const VideoUploader = () => {
             data.videoKey = key;
 
             axios({
-                baseURL: BASEURL || 'http://localhost:3000/api',
+                baseURL: BASEURL || 'http://localhost:3001/api',
                 url: '/video/getPutSignedUrl',
                 method: 'GET',
                 headers: {
@@ -59,7 +59,7 @@ const VideoUploader = () => {
                             if (response.status == 200) {
 
                                 axios({
-                                    baseURL: BASEURL || 'http://localhost:3000/api',
+                                    baseURL: BASEURL || 'http://localhost:3001/api',
                                     url: `/video/addEditCredential`,
                                     method: 'POST',
                                     data: data,

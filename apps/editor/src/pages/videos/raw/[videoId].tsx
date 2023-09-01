@@ -38,7 +38,7 @@ const VideoPage = ({ video, hasApplied }) => {
       creator: localVideo.creator._id
     };
     axios({
-      baseURL: 'http://localhost:3000/api',
+      baseURL: 'http://localhost:3001/api',
       url: '/video/addToLeger',
       method: 'PUT',
       headers: {
@@ -69,7 +69,7 @@ const VideoPage = ({ video, hasApplied }) => {
     const data: RemoveFromLegerType = {videoId: localVideo._id};
 
     axios({
-      baseURL: 'http://localhost:3000/api',
+      baseURL: 'http://localhost:3001/api',
       url: '/video/removeFromLeger',
       method: 'PUT',
       headers: {

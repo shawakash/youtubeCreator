@@ -11,7 +11,7 @@ const protection = (WrappedComponent: ComponentType) => {
 
     const init = async () => {
       axios({
-        baseURL: BASEURL || 'http://localhost:3000/api',
+        baseURL: BASEURL || 'http://localhost:3001/api',
         url: '/auth/me',
         method: 'GET',
         headers: {

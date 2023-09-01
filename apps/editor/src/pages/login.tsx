@@ -16,7 +16,7 @@ const login = () => {
 
     const handleSubmit = (data: LoginType) => {
         axios({
-            baseURL: BASEURL || 'http://localhost:3000/api',
+            baseURL: BASEURL || 'http://localhost:3001/api',
             url: '/editor/login',
             method: 'POST',
             data: data,

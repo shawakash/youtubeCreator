@@ -17,7 +17,7 @@ const signup = () => {
 
   const handleSubmit = (data: editorSignup) => {
     axios({
-      baseURL: BASEURL || 'http://localhost:3000/api',
+      baseURL: BASEURL || 'http://localhost:3001/api',
       url: '/editor/signup',
       method: 'POST',
       data: data,

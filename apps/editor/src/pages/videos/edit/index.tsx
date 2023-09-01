@@ -41,7 +41,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 
     const response = await axios({ 
-      baseURL: BASEURL || 'http://localhost:3000/api',
+      baseURL: BASEURL || 'http://localhost:3001/api',
       url: '/video/getVideos',
       method: 'GET',
       headers: {
