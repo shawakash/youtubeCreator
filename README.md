@@ -10,6 +10,15 @@ Run the following command:
 npx create-turbo@latest
 ```
 
+## Plans
+
+ - To provide a Licence to youtube to increase the upload quota
+ - To add a payment portal to pay before Authentication
+ - To Customize the auth page
+ - Make the publishAt date to be in a closed domain
+ - and many more.
+
+
 ## What's inside?
 
 This Turborepo includes the following packages/apps:
