@@ -5,4 +5,4 @@ cd /home/ubuntu/youtubeCreator
 git pull origin main
 yarn build
 pm2 stop next
-pm2 start npm --name "next" -- run "start:next"
+pm2 start npm --name "next" -- run "start:editor"
