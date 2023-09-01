@@ -5,9 +5,9 @@ on:
     paths:
       - 'apps/editor/**'
       - 'packages/ui/**'
-      - 'packages/db/**',
-      - 'packages/store/**',
-      - 'packages/tailwind-config/**',
+      - 'packages/db/**'
+      - 'packages/store/**'
+      - 'packages/tailwind-config/**'
       - 'packages/zodTypes/**'
     branches:
       - main
