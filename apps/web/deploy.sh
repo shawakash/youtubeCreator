@@ -5,5 +5,5 @@ cd /home/ubuntu/youtubeCreator
 git pull origin main
 yarn install
 yarn build
-pm2 stop next
-pm2 start npm --name "next" -- run "start:creator"
+pm2 stop web
+pm2 start npm --name "web" -- run "start:creator"
