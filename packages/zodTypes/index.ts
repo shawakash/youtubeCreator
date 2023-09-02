@@ -130,13 +130,13 @@ export type RemoveFromLegerType = z.infer<typeof removeFromLegerType>;
 export const uploadVideoType = z.object({
   title: z.string(),
   description: z.string(),
-  thumbnail: z.string(),
+  thumbnail: z.string().optional(),
   publishAt: z.string().optional(),
   privacy: z.string(),
   category: z.string(),
   videoKey: z.string(),
   bucketName: z.string(),
-  tags: z.array(z.string())
+  tags: z.array(z.string()).optional()
 });
 
 export type UploadVideoType = z.infer<typeof uploadVideoType>;

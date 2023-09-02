@@ -129,11 +129,13 @@ const VideoPage = ({ leger }) => {
         let prev = pre.find(c => c.videoKey == localVideo.videoKey);
         prev = { ...prev, ...data };
         prev.isUploaded = true;
+        console.log(prev)
         return pre;
       });
 
       setVideo(prevVideo => {
         prevVideo.isUploaded = true;
+        console.log(prevVideo)
         return { ...prevVideo, ...data }
       });
 
@@ -141,6 +143,7 @@ const VideoPage = ({ leger }) => {
         let prev = pre.find(p => p.videoKey == localVideo.videoKey);
         prev = {...prev, ...data};
         prev.isUploaded = true;
+        console.log(prev)
         return pre;
       })
 

@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         
         await dbConnect();
         middle(req, res, async () => {
-            const { _id, uploadId } = req.headers;
+            const { _id, uploadid } = req.headers;
             
             const parsedInput = uploadVideoType.safeParse(req.body);
             if(!parsedInput.success) {
@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             editVideo.description = description;
             editVideo.isUploaded = true;
 
-            const newUploadVideo = new UploadVideo({...parsedInput.data, uploadId });
+            const newUploadVideo = new UploadVideo({...parsedInput.data, uploadId: uploadid });
             await newUploadVideo.save();
             
             return res.status(200).json({ message: 'Created', video: newUploadVideo });
