@@ -10,6 +10,25 @@ Run the following command:
 npx create-turbo@latest
 ```
 
+## Env Example
+
+MONGODB_URI=
+BASEURL='http://localhost:3000/api'
+CLIENT_ID=''
+REDIRECT_URI='http://localhost:3000/api/auth/callback'
+CLIENT_SECRET=''
+OUTH_TOKEN_VALID_URL='https://www.googleapis.com/oauth2/v3/tokeninfo'
+AWS_ACCESS_KEY=''
+AWS_SECRET_KEY=''
+AWS_REGION='ap-south-1'
+AWS_BUCKET_NAME='creator-raw-videos'
+AWS_ENDPOINT=''
+AWS_RAW_VIDEO_BUCKET_NAME=''
+CREATOR_SECRET=''
+EDITOR_SECRET=''
+
+
+
 ## Plans
 
  - To provide a Licence to youtube to increase the upload quota
