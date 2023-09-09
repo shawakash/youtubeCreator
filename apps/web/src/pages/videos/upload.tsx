@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import { useSetRecoilState } from 'recoil';
 import { allEditVideo, allRawVideo } from 'store';
 import { editVideoInputType, rawVideoInputType } from 'zodTypes';
-import protection from '../../../utils/Protection';
+import protection from '../../../utils/protection';
 import { FileUpload } from 'primereact/fileupload';
 import { UploadForm } from 'ui';
 

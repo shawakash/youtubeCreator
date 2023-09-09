@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { GetServerSidePropsContext } from 'next';
 import cookie from 'cookie';
-import protection from '../../../../utils/Protection';
+import protection from '../../../../utils/protection';
 import axios from 'axios';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { allRawVideo, creatorIdAtom } from 'store';

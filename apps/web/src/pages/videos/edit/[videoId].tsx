@@ -8,7 +8,7 @@ import { EditVideoType, RawVideoType, UpdateVideoType, UploadVideoType, fetchVid
 import { GetServerSidePropsContext } from 'next/types';
 import axios from 'axios';
 import cookie from 'cookie';
-import protection from '../../../../utils/Protection';
+import protection from '../../../../utils/protection';
 
 
 const VideoPage: React.FC<{ leger: EditVideoType }> = ({ leger }) => {

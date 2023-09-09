@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react'
 import { toast } from 'react-hot-toast';
 //@ts-ignore
-import protection from '../../utils/Protection';
+import protection from '../../utils/protection';
 
 const Auth: React.FC = () => {
     const router = useRouter();

@@ -8,7 +8,7 @@ import { EditorType, RawVideoType, UpdateVideoType, fetchVideoReqType, legerInTy
 import { GetServerSidePropsContext } from 'next/types';
 import axios from 'axios';
 import cookie from 'cookie';
-import Protection from '../../../../utils/Protection';
+import Protection from '../../../../utils/protection';
 
 
 const VideoPage: React.FC<{ leger: legerType }> = ({ leger }) => {
