@@ -1,5 +1,5 @@
 #!/bin/bash
-export PATH= /home/ubuntu/.nvm/versions/node/v20.6.1/bin/node;$PATH 
+export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v20.6.1/bin/node
 
 cd /home/ubuntu/youtubeCreator
 git pull origin main
