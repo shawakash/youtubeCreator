@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "functions": {
+    "/api/video/getPutSignedUrl": {},
+    "/videos/edit": {},
+    "/videos/edit/[videoId]": {},
+    "/videos/raw/[videoId]": {},
+    "/videos/raw": {}
+  }
+}

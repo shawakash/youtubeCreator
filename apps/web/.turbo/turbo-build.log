@@ -1,0 +1,80 @@
+warning package.json: "dependencies" has dependency "autoprefixer" with range "10.4.15" that collides with a dependency in "devDependencies" of the same name with version "^10.4.15"
+warning package.json: "dependencies" has dependency "tailwindcss" with range "3.3.3" that collides with a dependency in "devDependencies" of the same name with version "^3.3.3"
+$ next build
+- info Loaded env from /Users/phillo/code/youtubeCreator/apps/web/.env
+- info Linting and checking validity of types...
+
+./src/pages/login.tsx
+52:8  Warning: React Hook useEffect has a missing dependency: 'setCreatorId'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/pages/signup.tsx
+53:6  Warning: React Hook useEffect has a missing dependency: 'setCreatorId'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/pages/videos/edit/[videoId].tsx
+28:6  Warning: React Hook useEffect has missing dependencies: 'leger' and 'router'. Either include them or remove the dependency array. If 'setVideo' needs the current value of 'leger', you can also switch to useReducer instead of useState and read 'leger' in the reducer.  react-hooks/exhaustive-deps
+
+./src/pages/videos/edit/index.tsx
+19:6  Warning: React Hook useEffect has missing dependencies: 'setEditVideos' and 'videos'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/pages/videos/raw/[videoId].tsx
+36:6  Warning: React Hook useEffect has missing dependencies: 'leger' and 'router'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/pages/videos/raw/index.tsx
+19:6  Warning: React Hook useEffect has missing dependencies: 'setRawVideos' and 'videos'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+- info Creating an optimized production build...
+- info Compiled successfully
+- info Collecting page data...
+- info Generating static pages (0/7)
+- info Generating static pages (1/7)
+- info Generating static pages (3/7)
+- info Generating static pages (5/7)
+- info Generating static pages (7/7)
+- info Finalizing page optimization...
+
+Route (pages)                              Size     First Load JS
+┌ ○ /                                      542 B           184 kB
+├   /_app                                  0 B             184 kB
+├ ○ /404                                   181 B           184 kB
+├ λ /api/auth/callback                     0 B             184 kB
+├ λ /api/auth/get                          0 B             184 kB
+├ λ /api/auth/me                           0 B             184 kB
+├ λ /api/auth/middle                       0 B             184 kB
+├ λ /api/auth/tokenValidator               0 B             184 kB
+├ λ /api/chat/auth                         0 B             184 kB
+├ λ /api/chat/ws                           0 B             184 kB
+├ λ /api/creator/login                     0 B             184 kB
+├ λ /api/creator/signup                    0 B             184 kB
+├ λ /api/hello                             0 B             184 kB
+├ λ /api/video/addEditCredential           0 B             184 kB
+├ λ /api/video/addEditor                   0 B             184 kB
+├ λ /api/video/addRawCredential            0 B             184 kB
+├ λ /api/video/addUploadVideo              0 B             184 kB
+├ λ /api/video/delete                      0 B             184 kB
+├ λ /api/video/deleteVideo                 0 B             184 kB
+├ λ /api/video/fetchVideo                  0 B             184 kB
+├ λ /api/video/getPutSignedUrl             0 B             184 kB
+├ λ /api/video/getSignedUrl                0 B             184 kB
+├ λ /api/video/getVideos                   0 B             184 kB
+├ λ /api/video/signedUrls                  0 B             184 kB
+├ λ /api/video/update                      0 B             184 kB
+├ λ /api/video/upload                      0 B             184 kB
+├ ○ /auth                                  747 B           196 kB
+├ ○ /login                                 1.36 kB         196 kB
+├ ○ /signup                                1.36 kB         196 kB
+├ λ /videos/edit                           817 B           196 kB
+├ λ /videos/edit/[videoId]                 1.35 kB         196 kB
+├ λ /videos/raw                            809 B           196 kB
+├ λ /videos/raw/[videoId]                  1.41 kB         196 kB
+└ ○ /videos/upload                         1.25 kB         196 kB
++ First Load JS shared by all              188 kB
+  ├ chunks/framework-80778c2cd359dca2.js   45.2 kB
+  ├ chunks/main-fddf096c9287bb20.js        29.3 kB
+  ├ chunks/pages/_app-76c99145200bdc32.js  108 kB
+  ├ chunks/webpack-38cee4c0e358b1a3.js     862 B
+  └ css/a6efb05e2cae0c06.css               3.83 kB
+
+λ  (Server)  server-side renders at runtime (uses getInitialProps or getServerSideProps)
+○  (Static)  automatically rendered as static HTML (uses no initial props)
+
