@@ -1,0 +1,14 @@
+{
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "14" // Set the target Node.js version here
+          }
+        }
+      ]
+    ],
+    "plugins": ["@babel/plugin-transform-runtime"]
+  }
+  
