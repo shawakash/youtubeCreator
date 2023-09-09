@@ -5,6 +5,6 @@ cd /home/ubuntu/youtubeCreator
 git pull origin main
 yarn install
 yarn build
-rm -rf package-lock.json
+sudo rm -rf package-lock.json
 pm2 stop editor
 pm2 start npm --name "editor" -- run "start:editor"
