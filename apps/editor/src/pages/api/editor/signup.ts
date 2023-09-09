@@ -8,8 +8,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if(req.method != 'POST') {
         return res.status(400).json({ message: 'Its a post request' });
     }
-    await dbConnect();
     try {
+        await dbConnect();
 
         const { EDITOR_SECRET } = process.env;
         if (!EDITOR_SECRET || EDITOR_SECRET.length == 0) {
