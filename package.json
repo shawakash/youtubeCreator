@@ -22,8 +22,6 @@
     "packages/*"
   ],
   "dependencies": {
-    "@babel/core": "^7.22.17",
-    "@babel/plugin-transform-runtime": "^7.22.15",
-    "@babel/preset-env": "^7.22.15"
+    "commander": "2.20.3"
   }
 }
