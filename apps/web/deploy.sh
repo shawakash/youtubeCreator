@@ -5,6 +5,5 @@ cd /home/ubuntu/youtubeCreator
 git pull origin main
 yarn install
 rm -rf package-lock.json
-yarn build
 pm2 stop web
 pm2 start npm --name "web" -- run "start:creator"
