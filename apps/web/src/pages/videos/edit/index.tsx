@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react'
 import { GetServerSidePropsContext } from 'next';
 import cookie from 'cookie';
-import protection from '../../../../utils/protection';
+import protection from '../../../../utils/Protection';
 import axios from 'axios';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { allEditVideo, creatorIdAtom } from 'store';
 import { EditVideoType } from 'zodTypes';
 import { VideoCard } from 'ui';
 
-const index: React.FC<{ videos: EditVideoType[] }> = ({ videos }) => {
+const Index: React.FC<{ videos: EditVideoType[] }> = ({ videos }) => {
   const [editVideos, setEditVideos] = useRecoilState(allEditVideo);
   const creatorId = useRecoilValue(creatorIdAtom);
 
@@ -67,4 +67,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 }
 
-export default protection(index)
+export default protection(Index)

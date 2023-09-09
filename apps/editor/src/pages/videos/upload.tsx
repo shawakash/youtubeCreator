@@ -11,7 +11,7 @@ import { UploadForm } from 'ui';
 
 
 
-const VideoUploader = () => {
+const VideoUploader: React.FC = () => {
     const video = useRef<HTMLInputElement | null>(null);
     const type = useRef<HTMLSelectElement | null>(null);
     const setAllEditVideos = useSetRecoilState(allEditVideo);

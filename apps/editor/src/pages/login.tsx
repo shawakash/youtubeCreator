@@ -7,7 +7,7 @@ import { editorIdAtom } from 'store';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/router';
 
-const login = () => {
+const Login: React.FC = () => {
 
     const setEditorId = useSetRecoilState(editorIdAtom);
     const router = useRouter();
@@ -58,4 +58,4 @@ const login = () => {
     )
 }
 
-export default login;
+export default Login;

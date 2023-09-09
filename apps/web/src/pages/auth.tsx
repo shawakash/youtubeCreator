@@ -3,9 +3,10 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react'
 import { toast } from 'react-hot-toast';
-import protection from '../../utils/protection';
+//@ts-ignore
+import protection from '../../utils/Protection';
 
-const auth = () => {
+const Auth: React.FC = () => {
     const router = useRouter();
     const { BASEURL } = process.env;
     const handleAuth = () => {
@@ -46,4 +47,4 @@ const auth = () => {
   )
 }
 
-export default protection(auth);
+export default protection(Auth);

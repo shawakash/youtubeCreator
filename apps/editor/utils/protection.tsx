@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { ComponentType, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
-const protection = (WrappedComponent: ComponentType) => {
+const Protection = (WrappedComponent: React.FC) => {
   return (props: any) => {
     const router = useRouter();
     const { BASEURL } = process.env;
@@ -52,4 +52,4 @@ const protection = (WrappedComponent: ComponentType) => {
   };
 };
 
-export default protection;
+export default Protection;

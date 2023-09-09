@@ -11,7 +11,7 @@ import cookie from 'cookie';
 import protection from '../../../../utils/protection';
 
 
-const VideoPage = ({ video, hasApplied }) => {
+const VideoPage: React.FC<{ video: RawVideoType, hasApplied: boolean }> = ({ video, hasApplied }) => {
   const [localVideo, setVideo] = useState<RawVideoType>();
   const [applied, setApplied] = useState<boolean>();
   const router = useRouter();

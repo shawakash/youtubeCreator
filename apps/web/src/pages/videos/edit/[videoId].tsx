@@ -4,14 +4,14 @@ import { UpdateForm, Upload, VideoCard } from 'ui';
 import { useSetRecoilState } from 'recoil';
 import { allEditVideo, allRawVideo } from 'store';
 import { toast } from 'react-hot-toast';
-import { EditVideoType, UpdateVideoType, UploadVideoType, fetchVideoReqType, } from 'zodTypes';
+import { EditVideoType, RawVideoType, UpdateVideoType, UploadVideoType, fetchVideoReqType, } from 'zodTypes';
 import { GetServerSidePropsContext } from 'next/types';
 import axios from 'axios';
 import cookie from 'cookie';
-import protection from '../../../../utils/protection';
+import protection from '../../../../utils/Protection';
 
 
-const VideoPage = ({ leger }) => {
+const VideoPage: React.FC<{ leger: EditVideoType }> = ({ leger }) => {
   const [localVideo, setVideo] = useState<EditVideoType>();
   const router = useRouter();
   const setAllEditVideos = useSetRecoilState(allEditVideo);

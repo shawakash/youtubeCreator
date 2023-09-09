@@ -4,14 +4,14 @@ import { ChatBox, EditorSelect, UpdateForm, VideoCard } from 'ui';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { allRawVideo, creatorIdAtom, legersAtom } from 'store';
 import { toast } from 'react-hot-toast';
-import { EditorType, RawVideoType, UpdateVideoType, fetchVideoReqType, legerInType, rawVideo } from 'zodTypes';
+import { EditorType, RawVideoType, UpdateVideoType, fetchVideoReqType, legerInType, legerType, rawVideo } from 'zodTypes';
 import { GetServerSidePropsContext } from 'next/types';
 import axios from 'axios';
 import cookie from 'cookie';
-import protection from '../../../../utils/protection';
+import Protection from '../../../../utils/Protection';
 
 
-const VideoPage = ({ leger }) => {
+const VideoPage: React.FC<{ leger: legerType }> = ({ leger }) => {
   const [localVideo, setVideo] = useState<RawVideoType>();
   const [editors, setEditors] = useState<EditorType[]>();
   const router = useRouter();
@@ -186,10 +186,10 @@ const VideoPage = ({ leger }) => {
 
           {localVideo && <UpdateForm client='creator' video={localVideo} type='raw' propData={handleUpdate} />}
           {!localVideo?.editor && editors && <EditorSelect isSelected={isSelected} editors={editors} onSelect={handleSelect} />}
-          {localVideo && localVideo.editor && <div className="">
+          {/* {localVideo && localVideo.editor && <div className="">
             <h1 className="">Chat with the editor</h1>
             <ChatBox url={'http://localhost:3000/api/chat/ws'} editorId={localVideo.editor._id} creatorId={localVideo.creator._id} token={sessionStorage.getItem("creatorToken")} />
-          </div> }
+          </div> } */}
         </div>
       </div>
 
@@ -241,4 +241,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 }
 
-export default protection(VideoPage);
+export default Protection(VideoPage);

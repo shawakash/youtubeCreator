@@ -8,7 +8,7 @@ import { assignedVideosAtom, editorIdAtom } from 'store';
 import { legerType } from 'zodTypes';
 import { VideoCard } from 'ui';
 
-const assigned: React.FC<{ assigned: legerType[] }> = ({ assigned }) => {
+const Assigned: React.FC<{ assigned: legerType[] }> = ({ assigned }) => {
     const [assignedVideos, setAssignedVideos] = useRecoilState(assignedVideosAtom);
     const editorId = useRecoilValue(editorIdAtom);
 
@@ -62,5 +62,5 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 }
 
-export default protection(assigned);
+export default protection(Assigned);
 

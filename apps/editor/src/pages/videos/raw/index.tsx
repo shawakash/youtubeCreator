@@ -8,7 +8,7 @@ import { RawVideoType } from 'zodTypes';
 import { VideoCard } from 'ui';
 import protection from '../../../../utils/protection';
 
-const index: React.FC<{ videos: RawVideoType[] }> = ({ videos }) => {
+const Index: React.FC<{ videos: RawVideoType[] }> = ({ videos }) => {
   const [rawVideos, setRawVideos] = useRecoilState(allRawVideoEditor);
   const editorId = useRecoilValue(editorIdAtom);
 
@@ -58,4 +58,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 }
 
-export default protection(index)
+export default protection(Index)

@@ -8,7 +8,7 @@ import { editorIdAtom, legersAtom } from 'store';
 import { LegerCard } from 'ui';
 import protection from '../../../../utils/protection';
 
-const index: React.FC<{ legers: legerType[] }> = ({ legers }) => {
+const Index: React.FC<{ legers: legerType[] }> = ({ legers }) => {
 
   const [localLegers, setLegers] = useRecoilState(legersAtom);
   const editorId = useRecoilValue(editorIdAtom);
@@ -71,4 +71,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 }
 
-export default protection(index);
+export default protection(Index);

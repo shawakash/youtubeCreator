@@ -4,13 +4,13 @@ import { useRouter } from 'next/router';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { assignedVideosAtom, editorEditedVideos, editorIdAtom } from 'store';
 import { UpdateForm, VideoCard } from 'ui';
-import { RawVideoType, UpdateVideoType, editVideoInputType, legerType } from 'zodTypes';
+import { EditVideoType, RawVideoType, UpdateVideoType, editVideoInputType, legerType } from 'zodTypes';
 import { GetServerSidePropsContext } from 'next';
 import cookie from 'cookie';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
-const assignedId = ({ video }) => {
+const AssignedId: React.FC<{ video: RawVideoType }> = ({ video }) => {
   const router = useRouter();
   const { assignedId } = router.query;
   const [uploaded, setUploaded] = useState<Boolean>();
@@ -173,4 +173,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 }
 
-export default protection(assignedId)
+export default protection(AssignedId)

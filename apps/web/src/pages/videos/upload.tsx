@@ -5,13 +5,13 @@ import { toast } from 'react-hot-toast';
 import { useSetRecoilState } from 'recoil';
 import { allEditVideo, allRawVideo } from 'store';
 import { editVideoInputType, rawVideoInputType } from 'zodTypes';
-import protection from '../../../utils/protection';
+import protection from '../../../utils/Protection';
 import { FileUpload } from 'primereact/fileupload';
 import { UploadForm } from 'ui';
 
 
 
-const VideoUploader = () => {
+const VideoUploader: React.FC = () => {
   const video = useRef<HTMLInputElement | null>(null);
   const type = useRef<HTMLSelectElement | null>(null);
   const setAllRawVideos = useSetRecoilState(allRawVideo);
