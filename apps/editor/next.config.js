@@ -2,7 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["ui", "db", "zodTypes", "store"],
-
 }
 
 module.exports = nextConfig
