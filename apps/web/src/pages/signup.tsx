@@ -17,7 +17,7 @@ const Signup: React.FC = () => {
 
   const handleSubmit = (data: creatorSignup) => {
     axios({
-      baseURL: BASEURL || 'http://localhost:3000/api',
+      baseURL: "http://ec2-54-224-119-32.compute-1.amazonaws.com:3001",
       url: '/creator/signup',
       method: 'POST',
       data: data,

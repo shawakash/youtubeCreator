@@ -17,7 +17,7 @@ const Signup: React.FC = () => {
 
   const handleSubmit = (data: editorSignup) => {
     axios({
-      baseURL: BASEURL || 'http://localhost:3001/api',
+      baseURL: 'http://ec2-54-224-119-32.compute-1.amazonaws.com:3001',
       url: '/editor/signup',
       method: 'POST',
       data: data,
