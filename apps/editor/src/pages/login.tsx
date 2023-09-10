@@ -16,7 +16,7 @@ const Login: React.FC = () => {
 
     const handleSubmit = (data: LoginType) => {
         axios({
-            baseURL: 'http://ec2-54-224-119-32.compute-1.amazonaws.com:3001',
+            baseURL: 'http://ec2-54-224-119-32.compute-1.amazonaws.com:3001/api',
             url: '/editor/login',
             method: 'POST',
             data: data,
