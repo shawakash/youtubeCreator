@@ -11,7 +11,7 @@ const Protection = (WrappedComponent: React.FC) => {
 
     const init = async () => {
       axios({
-        baseURL: BASEURL || 'http://localhost:3000/api',
+        baseURL: BASEURL || 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3000/api',
         url: '/auth/me',
         method: 'GET',
         headers: {

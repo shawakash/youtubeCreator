@@ -11,13 +11,13 @@ const Auth: React.FC = () => {
     const { BASEURL } = process.env;
     const handleAuth = () => {
         axios({
-            baseURL: BASEURL || 'http://localhost:3000/api',
+            baseURL: BASEURL || 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3000/api',
             url: '/auth/get',
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': sessionStorage.getItem('creatorToken'),
-                'Access-Control-Allow-Origin': "http://localhost:3000"
+                'Access-Control-Allow-Origin': "http://ec2-100-25-221-96.compute-1.amazonaws.com:3000"
             }
         }).then(async (response) => {
             toast.success('Redirecting to auth page :) ')

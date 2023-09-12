@@ -17,7 +17,7 @@ const Login: React.FC = () => {
 
     const handleSubmit = (data: LoginType) => {
         axios({
-            baseURL: BASEURL || 'http://localhost:3000/api',
+            baseURL: BASEURL || 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3000/api',
             url: '/creator/login',
             method: 'POST',
             data: data,

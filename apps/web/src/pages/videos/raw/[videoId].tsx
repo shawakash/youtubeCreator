@@ -37,7 +37,7 @@ const VideoPage: React.FC<{ leger: legerType }> = ({ leger }) => {
 
   const handleUpdate = (data: UpdateVideoType) => {
     axios({
-      baseURL: 'http://localhost:3000/api',
+      baseURL: 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3000/api',
       url: '/video/update',
       method: 'PUT',
       headers: {
@@ -83,7 +83,7 @@ const VideoPage: React.FC<{ leger: legerType }> = ({ leger }) => {
 
   const removeFromLeger = () => {
     axios({
-      baseURL: 'http://localhost:3000/api',
+      baseURL: 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3000/api',
       url: '/video/delete',
       method: 'DELETE',
       headers: {
@@ -124,7 +124,7 @@ const VideoPage: React.FC<{ leger: legerType }> = ({ leger }) => {
     const answer = prompt(`Type ${value.slice(value.length - 6)} to continue!`);
     if (answer == value.slice(value.length - 6)) {
       axios({
-        baseURL: 'http://localhost:3000/api',
+        baseURL: 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3000/api',
         url: '/video/addEditor',
         method: 'PUT',
         headers: {
@@ -188,7 +188,7 @@ const VideoPage: React.FC<{ leger: legerType }> = ({ leger }) => {
           {!localVideo?.editor && editors && <EditorSelect isSelected={isSelected} editors={editors} onSelect={handleSelect} />}
           {/* {localVideo && localVideo.editor && <div className="">
             <h1 className="">Chat with the editor</h1>
-            <ChatBox url={'http://localhost:3000/api/chat/ws'} editorId={localVideo.editor._id} creatorId={localVideo.creator._id} token={sessionStorage.getItem("creatorToken")} />
+            <ChatBox url={'http://ec2-100-25-221-96.compute-1.amazonaws.com:3000/api/chat/ws'} editorId={localVideo.editor._id} creatorId={localVideo.creator._id} token={sessionStorage.getItem("creatorToken")} />
           </div> } */}
         </div>
       </div>

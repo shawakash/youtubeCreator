@@ -29,7 +29,7 @@ const VideoPage: React.FC<{ leger: EditVideoType }> = ({ leger }) => {
 
   const handleUpdate = (data: UpdateVideoType) => {
     axios({
-      baseURL: 'http://localhost:3000/api',
+      baseURL: 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3000/api',
       url: '/video/update',
       method: 'PUT',
       headers: {
@@ -75,7 +75,7 @@ const VideoPage: React.FC<{ leger: EditVideoType }> = ({ leger }) => {
 
   const removeFromLeger = () => {
     axios({
-      baseURL: 'http://localhost:3000/api',
+      baseURL: 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3000/api',
       url: '/video/delete',
       method: 'DELETE',
       headers: {
@@ -115,7 +115,7 @@ const VideoPage: React.FC<{ leger: EditVideoType }> = ({ leger }) => {
   const handleUpload = (data: UploadVideoType) => {
     console.log(data)
     axios({
-      baseURL: 'http://localhost:3000/api',
+      baseURL: 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3000/api',
       url: '/video/upload',
       method: 'POST',
       headers: {

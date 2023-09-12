@@ -38,7 +38,7 @@ const VideoPage: React.FC<{ video: RawVideoType, hasApplied: boolean }> = ({ vid
       creator: localVideo.creator._id
     };
     axios({
-      baseURL: 'http://localhost:3001/api',
+      baseURL: 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3001/api',
       url: '/video/addToLeger',
       method: 'PUT',
       headers: {
@@ -69,7 +69,7 @@ const VideoPage: React.FC<{ video: RawVideoType, hasApplied: boolean }> = ({ vid
     const data: RemoveFromLegerType = {videoId: localVideo._id};
 
     axios({
-      baseURL: 'http://localhost:3001/api',
+      baseURL: 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3001/api',
       url: '/video/removeFromLeger',
       method: 'PUT',
       headers: {

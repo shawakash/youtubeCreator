@@ -36,7 +36,7 @@ const AssignedId: React.FC<{ video: RawVideoType }> = ({ video }) => {
     const selectedFile = editVideo.current;
     if (selectedFile) {
       axios({
-        baseURL: 'http://localhost:3001/api',
+        baseURL: 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3001/api',
         url: '/video/getPutSignedUrl',
         method: 'GET',
         headers: {
@@ -61,7 +61,7 @@ const AssignedId: React.FC<{ video: RawVideoType }> = ({ video }) => {
 
 
               axios({
-                baseURL: 'http://localhost:3001/api',
+                baseURL: 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3001/api',
                 url: `/video/addEditVideo`,
                 method: 'POST',
                 data: data,

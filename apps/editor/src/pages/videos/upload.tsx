@@ -34,7 +34,7 @@ const VideoUploader: React.FC = () => {
             data.videoKey = key;
 
             axios({
-                baseURL: BASEURL || 'http://localhost:3001/api',
+                baseURL: BASEURL || 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3001/api',
                 url: '/video/getPutSignedUrl',
                 method: 'GET',
                 headers: {
@@ -59,7 +59,7 @@ const VideoUploader: React.FC = () => {
                             if (response.status == 200) {
 
                                 axios({
-                                    baseURL: BASEURL || 'http://localhost:3001/api',
+                                    baseURL: BASEURL || 'http://ec2-100-25-221-96.compute-1.amazonaws.com:3001/api',
                                     url: `/video/addEditCredential`,
                                     method: 'POST',
                                     data: data,
