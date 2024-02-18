@@ -1,4 +1,4 @@
-[![Watch the video]](https://www.youtube.com/watch?v=ywNHQ3UQcqg)
+[![Watch the video]](https://i9.ytimg.com/vi_webp/ywNHQ3UQcqg/mq2.webp?sqp=CMilx64G-oaymwEmCMACELQB8quKqQMa8AEB-AHWCIAC0AWKAgwIABABGH8gMSgdMA8=&rs=AOn4CLAwjsggwo9WZuwtukYl_hijJFY9WQ)(https://www.youtube.com/watch?v=ywNHQ3UQcqg)
 
 ## Using this example
 
