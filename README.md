@@ -1,6 +1,4 @@
-# Turborepo starter
-
-This is an official starter Turborepo.
+[![Watch the video]](https://www.youtube.com/watch?v=ywNHQ3UQcqg)
 
 ## Using this example
 
